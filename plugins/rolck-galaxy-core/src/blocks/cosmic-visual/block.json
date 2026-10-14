@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Visual cósmico",
 	"category": "rolck-galaxy",
-	"description": "Ilustração animada de galáxia (SVG + CSS, sem imagens) com etiquetas flutuantes. Ideal ao lado do título principal.",
+	"description": "Ilustração animada de galáxia em 3D (SVG, sem imagens) com planetas em órbita e etiquetas flutuantes. Ideal ao lado do título principal.",
 	"keywords": [ "hero", "galáxia", "ilustração", "animação" ],
 	"textdomain": "rolck-galaxy-core",
 	"attributes": {
@@ -19,5 +19,6 @@
 	},
 	"editorScript": "file:./index.js",
 	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js",
 	"render": "file:./render.php"
 }
