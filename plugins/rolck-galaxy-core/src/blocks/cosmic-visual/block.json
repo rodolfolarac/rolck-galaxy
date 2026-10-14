@@ -10,7 +10,7 @@
 	"textdomain": "rolck-galaxy-core",
 	"attributes": {
 		"chips": { "type": "array", "default": [ "WordPress", "React", "PHP 8", "SEO 100" ] },
-		"center": { "type": "string", "default": "RG" }
+		"center": { "type": "string", "default": "" }
 	},
 	"supports": {
 		"html": false,

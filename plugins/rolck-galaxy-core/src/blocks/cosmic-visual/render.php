@@ -1,7 +1,8 @@
 <?php
 /**
  * Visual cósmico decorativo: SVG inline + animações CSS (pausadas para quem
- * prefere menos movimento). Fica escondido dos leitores de tela.
+ * prefere menos movimento). Alguns planetas também andam sozinhos pelo anel
+ * (animateMotion do SVG). Fica escondido dos leitores de tela.
  *
  * @package RolckGalaxy
  *
@@ -11,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $rolck_chips  = array_slice( array_filter( array_map( 'strval', (array) ( $attributes['chips'] ?? array() ) ) ), 0, 4 );
-$rolck_center = mb_substr( (string) ( $attributes['center'] ?? 'RG' ), 0, 3 );
+$rolck_center = mb_substr( (string) ( $attributes['center'] ?? '' ), 0, 3 );
 $rolck_uid    = wp_unique_id( 'rolck-cosmic-' );
 
 // Cores dos planetas: luz, cor e sombra (gradiente radial dá volume).
@@ -24,7 +25,8 @@ $rolck_colors = array(
 
 $rolck_ring_line = 'stroke="url(#' . esc_attr( $rolck_uid ) . '-ring)"';
 
-// Órbitas que giram. Cada planeta: ângulo na órbita, raio, cor e se tem anel.
+// Órbitas que giram. Cada planeta: ângulo na órbita, raio, cor, se tem anel e,
+// opcionalmente, segundos por volta para andar pelo anel (negativo = sentido contrário).
 // Órbitas circulares sem traço (b2) põem planetas em outra velocidade sobre o mesmo anel.
 $rolck_orbits = array(
 	array(
@@ -40,7 +42,7 @@ $rolck_orbits = array(
 		'ry'      => 92,
 		'tilt'    => -24,
 		'ring'    => $rolck_ring_line . ' stroke-opacity=".45" stroke-width="1.5"',
-		'planets' => array( array( -20, 9, 'cyan', false ), array( 60, 6, 'pink', false ), array( 160, 5, 'violet', false ), array( 215, 3.5, 'white', false ) ),
+		'planets' => array( array( -20, 9, 'cyan', false, 30 ), array( 60, 6, 'pink', false ), array( 160, 5, 'violet', false, -42 ), array( 215, 3.5, 'white', false ) ),
 	),
 	array(
 		'name'    => 'b',
@@ -61,14 +63,14 @@ $rolck_orbits = array(
 		'ry'      => 58,
 		'tilt'    => 32,
 		'ring'    => $rolck_ring_line . ' stroke-opacity=".35" stroke-width="1.2"',
-		'planets' => array( array( 185, 5, 'white', false ), array( 355, 6.5, 'pink', false ), array( 150, 3, 'cyan', false ) ),
+		'planets' => array( array( 185, 5, 'white', false ), array( 355, 6.5, 'pink', false, 20 ), array( 150, 3, 'cyan', false ) ),
 	),
 	array(
 		'name'    => 'd',
 		'rx'      => 128,
 		'ry'      => 128,
 		'ring'    => 'stroke="#ffffff" stroke-opacity=".06" stroke-dasharray="2 6"',
-		'planets' => array( array( 45, 4, 'cyan', false ), array( 225, 2.5, 'white', false ) ),
+		'planets' => array( array( 45, 4, 'cyan', false, -16 ), array( 225, 2.5, 'white', false ) ),
 	),
 );
 
@@ -149,8 +151,29 @@ $rolck_planet = static function ( float $x, float $y, float $r, string $color, b
 						<ellipse cx="260" cy="260" rx="<?php echo (float) $rolck_orbit['rx']; ?>" ry="<?php echo (float) $rolck_orbit['ry']; ?>" fill="none" <?php echo $rolck_orbit['ring']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- atributos fixos definidos acima. ?>/>
 					<?php endif; ?>
 					<?php
-					foreach ( $rolck_orbit['planets'] as [ $rolck_angle, $rolck_r, $rolck_color, $rolck_rings ] ) {
-						$rolck_planet( 260 + $rolck_orbit['rx'] * cos( deg2rad( $rolck_angle ) ), 260 + $rolck_orbit['ry'] * sin( deg2rad( $rolck_angle ) ), $rolck_r, $rolck_color, $rolck_rings );
+					foreach ( $rolck_orbit['planets'] as $rolck_p ) {
+						[ $rolck_angle, $rolck_r, $rolck_color, $rolck_rings ] = $rolck_p;
+						$rolck_lap = (float) ( $rolck_p[4] ?? 0 );
+						if ( ! $rolck_lap ) {
+							$rolck_planet( 260 + $rolck_orbit['rx'] * cos( deg2rad( $rolck_angle ) ), 260 + $rolck_orbit['ry'] * sin( deg2rad( $rolck_angle ) ), $rolck_r, $rolck_color, $rolck_rings );
+							continue;
+						}
+						// Anda pelo próprio anel: caminho da elipse, começando no ângulo informado.
+						$rolck_rx   = (float) $rolck_orbit['rx'];
+						$rolck_ry   = (float) $rolck_orbit['ry'];
+						$rolck_path = sprintf( 'M%1$.1F,260 A%2$.1F,%3$.1F 0 1,1 %4$.1F,260 A%2$.1F,%3$.1F 0 1,1 %1$.1F,260', 260 + $rolck_rx, $rolck_rx, $rolck_ry, 260 - $rolck_rx );
+						$rolck_dur  = abs( $rolck_lap );
+						$rolck_from = fmod( ( ( $rolck_lap > 0 ? $rolck_angle : 360 - $rolck_angle ) % 360 + 360 ), 360 ) / 360;
+						echo '<g>';
+						$rolck_planet( 0, 0, $rolck_r, $rolck_color, $rolck_rings );
+						printf(
+							'<animateMotion dur="%1$.1Fs" begin="-%2$.2Fs" repeatCount="indefinite" path="%3$s"%4$s/>',
+							$rolck_dur,
+							$rolck_from * $rolck_dur,
+							esc_attr( $rolck_path ),
+							$rolck_lap < 0 ? ' keyPoints="1;0" keyTimes="0;1" calcMode="linear"' : ''
+						);
+						echo '</g>';
 					}
 					?>
 				</g>
@@ -168,7 +191,9 @@ $rolck_planet = static function ( float $x, float $y, float $r, string $color, b
 		<g class="rolck-cosmic__blob">
 			<circle cx="260" cy="260" r="106" fill="url(#<?php echo esc_attr( $rolck_uid ); ?>-blob)"/>
 			<ellipse cx="226" cy="208" rx="46" ry="18" fill="#ffffff" fill-opacity=".14" transform="rotate(-28 226 208)"/>
-			<text x="260" y="260" dominant-baseline="central" text-anchor="middle" class="rolck-cosmic__center"><?php echo esc_html( $rolck_center ); ?></text>
+			<?php if ( '' !== trim( $rolck_center ) ) : ?>
+				<text x="260" y="260" dominant-baseline="central" text-anchor="middle" class="rolck-cosmic__center"><?php echo esc_html( $rolck_center ); ?></text>
+			<?php endif; ?>
 		</g>
 
 		<g fill="#ffffff">
@@ -177,6 +202,7 @@ $rolck_planet = static function ( float $x, float $y, float $r, string $color, b
 			<?php endforeach; ?>
 		</g>
 	</svg>
+	<script>matchMedia("(prefers-reduced-motion: reduce)").matches&&document.currentScript.previousElementSibling.pauseAnimations()</script>
 	<?php foreach ( $rolck_chips as $rolck_i => $rolck_chip ) : ?>
 		<span class="rolck-cosmic__chip rolck-cosmic__chip--<?php echo (int) $rolck_i + 1; ?>"><?php echo esc_html( $rolck_chip ); ?></span>
 	<?php endforeach; ?>
