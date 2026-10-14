@@ -1,0 +1,17 @@
+/*
+Theme Name: Rolck Galaxy
+Theme URI: https://rolckgalaxy.com
+Author: Rolck Galaxy
+Description: Tema de blocos do site da Rolck Galaxy: portfólio e vitrine de projetos com demo ao vivo, em português e inglês. Tudo nativo (Editor do site, theme.json, blocos), sem plugins de terceiros. Use com o plugin Rolck Galaxy Core.
+Requires at least: 6.6
+Tested up to: 6.9
+Requires PHP: 8.1
+Version: 1.0.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: rolck-galaxy
+Tags: block-patterns, full-site-editing, portfolio, dark, one-column, wide-blocks, translation-ready
+
+O CSS do tema fica em assets/css/theme.css. Cores, fontes e espaçamentos
+ficam no theme.json (editáveis em Aparência → Editor → Estilos).
+*/

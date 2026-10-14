@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/contact-form",
+	"version": "1.0.0",
+	"title": "Formulário de contato",
+	"category": "rolck-galaxy",
+	"description": "Formulário nativo com proteção contra spam. As mensagens chegam por e-mail e ficam em Rolck Galaxy → Mensagens.",
+	"keywords": [ "contato", "formulário", "contact", "email" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"showSubject": { "type": "boolean", "default": true }
+	},
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"spacing": { "margin": true, "padding": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": [ "file:./style-index.css", "rolck-ui" ],
+	"render": "file:./render.php",
+	"viewScriptModule": "file:./view.js"
+}

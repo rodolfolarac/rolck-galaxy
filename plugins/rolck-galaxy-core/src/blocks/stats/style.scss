@@ -1,0 +1,51 @@
+@use "../../shared/tokens" as *;
+
+.rolck-stats {
+
+	&__list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+		gap: 1px;
+		margin: 0;
+		overflow: hidden;
+		border: 1px solid $border;
+		border-radius: $radius;
+		background: $border;
+	}
+
+	&__item {
+		display: flex;
+		flex-direction: column-reverse;
+		gap: 0.35rem;
+		padding: clamp(1.25rem, 3vw, 2rem) 1.25rem;
+		background: color-mix(in srgb, $surface 92%, transparent);
+		text-align: center;
+	}
+
+	&__value {
+		margin: 0;
+		background: $brand;
+		background-clip: text;
+		color: transparent;
+		font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+		font-variant-numeric: tabular-nums;
+		font-weight: 700;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+
+	&__number {
+		display: inline-block;
+	}
+
+	&__label {
+		color: $muted;
+		font-size: 0.9rem;
+	}
+
+	&__panel-item {
+		margin-bottom: 1rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid #ddd;
+	}
+}

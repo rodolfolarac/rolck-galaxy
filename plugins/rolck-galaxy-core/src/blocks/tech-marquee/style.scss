@@ -1,0 +1,66 @@
+@use "../../shared/tokens" as *;
+
+.rolck-marquee {
+	overflow: hidden;
+	mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+
+	&__viewport {
+		display: flex;
+		width: max-content;
+		animation: rolck-marquee var(--rolck-marquee-duration, 40s) linear infinite;
+
+		&:hover {
+			animation-play-state: paused;
+		}
+	}
+
+	&__track {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0 0.75rem 0 0;
+		list-style: none;
+
+		&--static {
+			flex-wrap: wrap;
+		}
+
+		li {
+			flex: none;
+			padding: 0.6rem 1.15rem;
+			border: 1px solid $border;
+			border-radius: 999px;
+			background: color-mix(in srgb, $surface 80%, transparent);
+			color: $muted;
+			font-size: 0.95rem;
+			font-weight: 500;
+			white-space: nowrap;
+		}
+	}
+}
+
+@keyframes rolck-marquee {
+
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.rolck-marquee__viewport {
+		flex-wrap: wrap;
+		width: auto;
+		animation: none;
+	}
+
+	.rolck-marquee__track[aria-hidden="true"] {
+		display: none;
+	}
+
+	.rolck-marquee__track {
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+}

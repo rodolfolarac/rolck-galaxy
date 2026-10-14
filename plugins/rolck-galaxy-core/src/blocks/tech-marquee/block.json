@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/tech-marquee",
+	"version": "1.0.0",
+	"title": "Faixa de tecnologias",
+	"category": "rolck-galaxy",
+	"description": "Faixa em movimento contínuo com as tecnologias que você usa (só CSS, sem JavaScript).",
+	"keywords": [ "tecnologias", "stack", "marquee", "faixa" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"items": {
+			"type": "array",
+			"default": [ "WordPress", "Gutenberg", "React", "Interactivity API", "PHP 8", "JavaScript", "TypeScript", "Node.js", "SCSS", "Vite", "Tailwind CSS", "PostgreSQL", "Figma", "Acessibilidade", "SEO técnico" ]
+		},
+		"speed": { "type": "number", "default": 40 },
+		"label": { "type": "string", "default": "Tecnologias" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": { "margin": true, "padding": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

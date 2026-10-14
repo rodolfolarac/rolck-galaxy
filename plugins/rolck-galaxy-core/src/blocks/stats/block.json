@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/stats",
+	"version": "1.0.0",
+	"title": "Números",
+	"category": "rolck-galaxy",
+	"description": "Números em destaque (projetos, clientes, anos…) com contagem animada ao aparecer na tela.",
+	"keywords": [ "números", "estatísticas", "contador", "stats" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"items": {
+			"type": "array",
+			"default": [
+				{ "value": "3", "prefix": "", "suffix": "", "label": "Projetos na vitrine" },
+				{ "value": "100", "prefix": "", "suffix": "", "label": "Nota PageSpeed" },
+				{ "value": "2", "prefix": "", "suffix": "", "label": "Idiomas" },
+				{ "value": "0", "prefix": "", "suffix": "", "label": "Plugins de terceiros" }
+			]
+		},
+		"animate": { "type": "boolean", "default": true }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": { "margin": true, "padding": true },
+		"typography": { "fontSize": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScriptModule": "file:./view.js"
+}

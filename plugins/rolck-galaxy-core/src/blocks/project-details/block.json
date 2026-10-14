@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/project-details",
+	"version": "1.0.0",
+	"title": "Ficha do projeto",
+	"category": "rolck-galaxy",
+	"description": "Status, preço, botões de demo e compra, ficha técnica e destaques do projeto atual.",
+	"keywords": [
+		"projeto",
+		"demo",
+		"preço",
+		"comprar"
+	],
+	"textdomain": "rolck-galaxy-core",
+	"usesContext": [
+		"postId",
+		"postType"
+	],
+	"attributes": {
+		"show": {
+			"type": "string",
+			"default": "all",
+			"enum": [
+				"all",
+				"actions",
+				"specs",
+				"highlights"
+			]
+		}
+	},
+	"supports": {
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": [
+		"file:./style-index.css",
+		"rolck-ui"
+	],
+	"render": "file:./render.php"
+}

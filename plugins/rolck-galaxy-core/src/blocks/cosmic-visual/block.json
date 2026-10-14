@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/cosmic-visual",
+	"version": "1.0.0",
+	"title": "Visual cósmico",
+	"category": "rolck-galaxy",
+	"description": "Ilustração animada de galáxia (SVG + CSS, sem imagens) com etiquetas flutuantes. Ideal ao lado do título principal.",
+	"keywords": [ "hero", "galáxia", "ilustração", "animação" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"chips": { "type": "array", "default": [ "WordPress", "React", "PHP 8", "SEO 100" ] },
+		"center": { "type": "string", "default": "RG" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": { "margin": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,89 @@
+# Publica o tema e o plugin no site no ar a cada push na main.
+#
+# Só o código vai para o servidor: páginas, projetos, textos, imagens e
+# configurações ficam no banco de dados do WordPress e não são tocados.
+# O conteúdo enviado é exatamente o dos zips de `npm run package`.
+#
+# Configure em GitHub → Settings → Secrets and variables → Actions → Secrets:
+#   DEPLOY_HOST      endereço do servidor (ex.: ftp.seudominio.com.br ou o IP do cPanel)
+#   DEPLOY_USER      usuário FTP ou SSH
+#   DEPLOY_PASSWORD  senha desse usuário
+#   DEPLOY_PATH      pasta do WordPress no servidor (ex.: public_html, relativa à pasta inicial do usuário)
+#   DEPLOY_PROTOCOL  opcional: ftp (padrão) ou sftp
+#   DEPLOY_PORT      opcional: 21 no FTP, 22 no SFTP (na HostGator EUA, 2222)
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      LFTP_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_PROTOCOL: ${{ secrets.DEPLOY_PROTOCOL }}
+      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Conferir o código
+        run: |
+          npm run lint:js
+          npm run lint:css
+          find themes plugins tools -name '*.php' -not -path '*/node_modules/*' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: Compilar e empacotar
+        run: npm run package
+
+      - name: Preparar arquivos
+        run: |
+          mkdir -p stage
+          unzip -q dist/rolck-galaxy.zip -d stage
+          unzip -q dist/rolck-galaxy-core.zip -d stage
+
+      - name: Conferir configuração do servidor
+        id: config
+        run: |
+          if [ -z "$DEPLOY_HOST" ] || [ -z "$DEPLOY_USER" ] || [ -z "$LFTP_PASSWORD" ] || [ -z "$DEPLOY_PATH" ]; then
+            echo "::warning::Deploy pulado: cadastre DEPLOY_HOST, DEPLOY_USER, DEPLOY_PASSWORD e DEPLOY_PATH nos Secrets do repositório."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Enviar para o servidor
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          sudo apt-get install -y -qq lftp > /dev/null
+          protocol="${DEPLOY_PROTOCOL:-ftp}"
+          port="${DEPLOY_PORT:-$([ "$protocol" = sftp ] && echo 22 || echo 21)}"
+          wp="${DEPLOY_PATH%/}"
+          lftp -c "
+            set net:max-retries 3; set net:timeout 30; set cmd:fail-exit yes;
+            set ftp:ssl-allow yes; set ssl:verify-certificate no;
+            set sftp:auto-confirm yes;
+            open --env-password -u \"$DEPLOY_USER\" -p $port $protocol://$DEPLOY_HOST;
+            mirror -R --delete --parallel=4 stage/rolck-galaxy \"$wp/wp-content/themes/rolck-galaxy\";
+            mirror -R --delete --parallel=4 stage/rolck-galaxy-core \"$wp/wp-content/plugins/rolck-galaxy-core\";
+          "
+          echo "Tema e plugin publicados em $wp/wp-content."

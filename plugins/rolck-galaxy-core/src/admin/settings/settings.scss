@@ -1,0 +1,221 @@
+// Tela Rolck Galaxy → Configurações.
+.rolck-admin {
+	max-width: 1100px;
+
+	&__header {
+		position: sticky;
+		top: 32px;
+		z-index: 10;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		margin: 0 0 16px;
+		padding: 16px 0;
+		background: #f0f0f1;
+
+		h1 {
+			margin: 0 0 4px;
+			font-size: 23px;
+		}
+
+		p {
+			max-width: 640px;
+			margin: 0;
+			color: #50575e;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__notice {
+		margin: 0 0 16px;
+	}
+
+	&__tabs .components-tab-panel__tabs {
+		flex-wrap: wrap;
+		margin-bottom: 16px;
+		border-bottom: 1px solid #dcdcde;
+	}
+
+	&__card {
+		margin-bottom: 16px;
+
+		h2 {
+			margin: 0;
+			font-size: 15px;
+		}
+	}
+
+	&__description,
+	&__help,
+	&__intro {
+		margin: 4px 0 0;
+		color: #646970;
+	}
+
+	&__intro {
+		margin: 0 0 12px;
+	}
+
+	&__search {
+		max-width: 360px;
+		margin-bottom: 16px;
+	}
+
+	&__fields {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 20px 24px;
+
+		> .is-wide,
+		> .rolck-admin__media {
+			grid-column: 1 / -1;
+		}
+
+		@media (max-width: 782px) {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	&__pair {
+		margin: 0;
+		padding: 0;
+		border: 0;
+
+		legend {
+			margin-bottom: 8px;
+			font-weight: 600;
+		}
+	}
+
+	&__pair-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+
+		@media (max-width: 782px) {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	&__lang {
+		display: inline-block;
+		padding: 0 5px;
+		border-radius: 3px;
+		background: #7c3aed;
+		color: #fff;
+		font-size: 10px;
+		font-weight: 700;
+	}
+
+	&__count {
+		float: right;
+		color: #646970;
+		font-weight: 400;
+
+		&.is-over {
+			color: #cc1818;
+		}
+	}
+
+	&__string {
+		padding-bottom: 16px;
+		border-bottom: 1px solid #f0f0f1;
+	}
+
+	&__media-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+
+		img {
+			width: 96px;
+			height: 64px;
+			border: 1px solid #dcdcde;
+			border-radius: 4px;
+			background: #fff;
+			object-fit: contain;
+		}
+	}
+
+	&__media-empty {
+		color: #646970;
+	}
+
+	&__code textarea {
+		font-family: Menlo, Consolas, monospace;
+		font-size: 12px;
+	}
+
+	&__example {
+		padding: 12px;
+		border-radius: 4px;
+		background: #f6f7f7;
+		font-family: Menlo, Consolas, monospace;
+	}
+
+	&__steps {
+		margin: 0 0 0 20px;
+
+		li {
+			margin-bottom: 6px;
+		}
+	}
+
+	&__shortcuts {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 12px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		a {
+			display: grid;
+			gap: 4px;
+			height: 100%;
+			padding: 14px;
+			border: 1px solid #dcdcde;
+			border-radius: 6px;
+			color: inherit;
+			text-decoration: none;
+			box-sizing: border-box;
+
+			&:hover,
+			&:focus {
+				border-color: #7c3aed;
+				box-shadow: 0 0 0 1px #7c3aed;
+			}
+		}
+
+		strong {
+			color: #7c3aed;
+		}
+
+		span {
+			color: #50575e;
+		}
+	}
+}
+
+.rolck-admin__auto {
+	display: grid;
+	gap: 12px;
+
+	.components-notice {
+		margin: 0;
+	}
+}
+
+.rolck-admin__auto-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}

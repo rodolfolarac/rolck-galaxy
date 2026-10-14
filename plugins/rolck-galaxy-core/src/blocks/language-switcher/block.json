@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/language-switcher",
+	"version": "1.0.0",
+	"title": "Seletor de idioma",
+	"category": "rolck-galaxy",
+	"description": "Botão PT | EN que leva para a mesma página no outro idioma.",
+	"keywords": [ "idioma", "language", "tradução", "english" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"showIcon": { "type": "boolean", "default": true },
+		"fullName": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"html": false,
+		"spacing": { "margin": true },
+		"typography": { "fontSize": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

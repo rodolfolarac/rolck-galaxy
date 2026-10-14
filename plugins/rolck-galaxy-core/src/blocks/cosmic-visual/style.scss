@@ -1,0 +1,117 @@
+@use "../../shared/tokens" as *;
+
+.rolck-cosmic {
+	position: relative;
+	width: 100%;
+	max-width: 520px;
+	margin-inline: auto;
+	aspect-ratio: 1;
+
+	&__svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+
+	&__orbit {
+		transform-box: view-box;
+		transform-origin: 50% 50%;
+		animation: rolck-spin 48s linear infinite;
+
+		&--b {
+			animation-duration: 80s;
+			animation-direction: reverse;
+		}
+
+		&--c {
+			animation-duration: 32s;
+		}
+	}
+
+	&__blob {
+		transform-box: view-box;
+		transform-origin: 50% 50%;
+		animation: rolck-float 9s ease-in-out infinite;
+	}
+
+	&__center {
+		fill: #fff;
+		font-family: inherit;
+		font-size: 42px;
+		font-weight: 800;
+		letter-spacing: -0.04em;
+	}
+
+	&__chip {
+		position: absolute;
+		padding: 0.5rem 0.9rem;
+		border: 1px solid rgb(255 255 255 / 12%);
+		border-radius: 999px;
+		background: rgb(20 20 42 / 78%);
+		backdrop-filter: blur(8px);
+		box-shadow: 0 12px 30px -12px rgb(0 0 0 / 60%);
+		color: $text;
+		font-size: clamp(0.72rem, 0.65rem + 0.3vw, 0.85rem);
+		font-weight: 600;
+		white-space: nowrap;
+		animation: rolck-float 7s ease-in-out infinite;
+
+		&::before {
+			content: "";
+			display: inline-block;
+			width: 0.5rem;
+			height: 0.5rem;
+			margin-right: 0.45rem;
+			border-radius: 50%;
+			background: $brand;
+			vertical-align: 0.05em;
+		}
+
+		&--1 {
+			top: 12%;
+			left: 2%;
+		}
+
+		&--2 {
+			top: 22%;
+			right: 0;
+			animation-delay: -2s;
+		}
+
+		&--3 {
+			bottom: 18%;
+			left: 6%;
+			animation-delay: -4s;
+		}
+
+		&--4 {
+			right: 6%;
+			bottom: 8%;
+			animation-delay: -5.5s;
+		}
+	}
+}
+
+@keyframes rolck-spin {
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes rolck-float {
+
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.rolck-cosmic__orbit,
+	.rolck-cosmic__blob,
+	.rolck-cosmic__chip {
+		animation: none;
+	}
+}

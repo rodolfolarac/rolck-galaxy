@@ -1,0 +1,29 @@
+{
+  "name": "rolck-galaxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site da Rolck Galaxy: tema de blocos + plugin com blocos, idiomas, SEO e vitrine de projetos.",
+  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "build": "wp-scripts build --webpack-src-dir=plugins/rolck-galaxy-core/src --output-path=plugins/rolck-galaxy-core/build --experimental-modules --webpack-copy-php && wp-scripts build-blocks-manifest --input=plugins/rolck-galaxy-core/build/blocks --output=plugins/rolck-galaxy-core/build/blocks-manifest.php && node tools/build-css.mjs",
+    "start": "wp-scripts start --webpack-src-dir=plugins/rolck-galaxy-core/src --output-path=plugins/rolck-galaxy-core/build --experimental-modules --webpack-copy-php",
+    "lint:js": "wp-scripts lint-js plugins/rolck-galaxy-core/src tools",
+    "lint:css": "wp-scripts lint-style \"plugins/rolck-galaxy-core/src/**/*.scss\"",
+    "dev": "node tools/dev/start.mjs",
+    "test:e2e": "node tools/tests/e2e.mjs",
+    "test:pagespeed": "node tools/tests/pagespeed.mjs",
+    "covers": "node tools/covers/generate.mjs",
+    "package": "node tools/package.mjs",
+    "backup": "node tools/backup.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@wordpress/interactivity": "^7.0.0",
+    "@wordpress/scripts": "^36.1.0",
+    "@wp-playground/cli": "^3.1.57",
+    "lighthouse": "^13.5.0",
+    "playwright-core": "^1.55.0"
+  }
+}

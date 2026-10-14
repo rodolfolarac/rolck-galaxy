@@ -1,0 +1,18 @@
+// Atalhos para os tokens do theme.json
+// (com valores de reserva caso o tema mude).
+$bg: var(--wp--preset--color--bg, #0a0a1a);
+$surface: var(--wp--preset--color--surface, #14142a);
+$surface-2: var(--wp--preset--color--surface-2, #1d1d36);
+$border: var(--wp--preset--color--border, #2b2b4a);
+$text: var(--wp--preset--color--text, #f5f5fa);
+$muted: var(--wp--preset--color--muted, #a3a3bd);
+$primary: var(--wp--preset--color--primary, #8b5cf6);
+$secondary: var(--wp--preset--color--secondary, #22d3ee);
+$success: var(--wp--preset--color--success, #22c55e);
+$warning: var(--wp--preset--color--warning, #f59e0b);
+$danger: var(--wp--preset--color--danger, #f43f5e);
+$brand: var(--wp--preset--gradient--brand, linear-gradient(90deg, #8b5cf6, #22d3ee));
+$brand-strong: var(--wp--preset--gradient--brand-strong, linear-gradient(90deg, #7c3aed, #2563eb 55%, #0e7490));
+$radius: var(--wp--custom--radius--card, 18px);
+$radius-sm: var(--wp--custom--radius--small, 10px);
+$ease: cubic-bezier(0.22, 1, 0.36, 1);

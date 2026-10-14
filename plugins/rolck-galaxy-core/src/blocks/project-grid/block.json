@@ -1,0 +1,81 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/project-grid",
+	"version": "1.0.0",
+	"title": "Grade de projetos",
+	"category": "rolck-galaxy",
+	"description": "Vitrine dos projetos com filtro por categoria, demo ao vivo e status.",
+	"keywords": [
+		"projetos",
+		"portfolio",
+		"vitrine",
+		"comprar"
+	],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"count": {
+			"type": "number",
+			"default": 6
+		},
+		"columns": {
+			"type": "number",
+			"default": 3
+		},
+		"showFilters": {
+			"type": "boolean",
+			"default": true
+		},
+		"featuredOnly": {
+			"type": "boolean",
+			"default": false
+		},
+		"category": {
+			"type": "number",
+			"default": 0
+		},
+		"inheritQuery": {
+			"type": "boolean",
+			"default": false
+		},
+		"excludeCurrent": {
+			"type": "boolean",
+			"default": false
+		},
+		"showExcerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"headingLevel": {
+			"type": "string",
+			"default": "h3",
+			"enum": [
+				"h2",
+				"h3",
+				"h4"
+			]
+		},
+		"eagerImages": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [
+			"wide",
+			"full"
+		],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": [
+		"file:./style-index.css",
+		"rolck-ui"
+	],
+	"render": "file:./render.php",
+	"viewScriptModule": "file:./view.js"
+}

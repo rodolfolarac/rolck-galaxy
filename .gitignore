@@ -1,0 +1,9 @@
+node_modules/
+.wp-dev/
+.wp-dev-blueprint.json
+dist/
+tools/tests/results/
+plugins/rolck-galaxy-core/build/
+*.log
+.env.local
+backups/

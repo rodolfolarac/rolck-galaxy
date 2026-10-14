@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/breadcrumbs",
+	"version": "1.0.0",
+	"title": "Breadcrumbs",
+	"category": "rolck-galaxy",
+	"description": "Trilha de navegação (Início › Projetos › …). A mesma trilha vai para o Google como dados estruturados.",
+	"keywords": [ "breadcrumb", "trilha", "navegação" ],
+	"textdomain": "rolck-galaxy-core",
+	"supports": {
+		"html": false,
+		"spacing": { "margin": true },
+		"typography": { "fontSize": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

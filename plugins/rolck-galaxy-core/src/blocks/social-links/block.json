@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/social-links",
+	"version": "1.0.0",
+	"title": "Redes sociais da empresa",
+	"category": "rolck-galaxy",
+	"description": "Ícones das redes sociais cadastradas em Rolck Galaxy → Geral. Mudou lá, muda em todo o site.",
+	"keywords": [ "redes sociais", "social", "github", "linkedin" ],
+	"textdomain": "rolck-galaxy-core",
+	"supports": {
+		"html": false,
+		"spacing": { "margin": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

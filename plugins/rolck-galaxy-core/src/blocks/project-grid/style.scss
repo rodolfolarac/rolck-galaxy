@@ -1,0 +1,299 @@
+// Grade de projetos, filtros e o cartão de projeto (usado também pelo
+// bloco Projeto em destaque, que carrega este mesmo CSS).
+@use "../../shared/tokens" as *;
+
+.rolck-projects {
+
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(var(--rolck-columns, 3), minmax(0, 1fr));
+		gap: clamp(1rem, 2.4vw, 1.75rem);
+
+		@media (max-width: 1080px) {
+			grid-template-columns: repeat(min(2, var(--rolck-columns, 3)), minmax(0, 1fr));
+		}
+
+		@media (max-width: 640px) {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	&__empty {
+		color: $muted;
+		text-align: center;
+	}
+}
+
+// ── filtros ──
+.rolck-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 2.75rem;
+		padding: 0 1.1rem;
+		border: 1px solid $border;
+		border-radius: 999px;
+		color: $muted;
+		font-size: 0.9rem;
+		font-weight: 500;
+		text-decoration: none;
+		transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+
+		&:hover,
+		&:focus-visible {
+			border-color: color-mix(in srgb, $primary 60%, transparent);
+			color: $text;
+		}
+
+		&[aria-current="true"] {
+			border-color: transparent;
+			background: $brand-strong;
+			color: #fff;
+		}
+	}
+
+	&__count {
+		min-width: 1.5rem;
+		padding: 0.05rem 0.45rem;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 10%);
+		font-size: 0.75rem;
+		text-align: center;
+	}
+}
+
+// ── cartão ──
+.rolck-card {
+	--rolck-accent: #{$primary};
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border: 1px solid $border;
+	border-radius: $radius;
+	background: linear-gradient(180deg, color-mix(in srgb, $surface-2 80%, transparent), $surface);
+	transition: transform 0.35s $ease, border-color 0.35s, box-shadow 0.35s;
+
+	&[hidden] {
+		display: none;
+	}
+
+	&:hover,
+	&:focus-within {
+		transform: translateY(-4px);
+		border-color: color-mix(in srgb, var(--rolck-accent) 55%, transparent);
+		box-shadow: 0 24px 50px -24px color-mix(in srgb, var(--rolck-accent) 55%, transparent);
+	}
+
+	&__media {
+		position: relative;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		background: radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--rolck-accent) 45%, transparent), transparent 60%), $surface-2;
+	}
+
+	&__image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s $ease;
+	}
+
+	&:hover &__image {
+		transform: scale(1.04);
+	}
+
+	&__placeholder {
+		display: grid;
+		place-items: center;
+		height: 100%;
+		color: rgb(255 255 255 / 85%);
+		font-size: clamp(3rem, 8vw, 4.5rem);
+		font-weight: 700;
+	}
+
+	&__flag {
+		position: absolute;
+		top: 0.85rem;
+		left: 0.85rem;
+		padding: 0.3rem 0.7rem;
+		border-radius: 999px;
+		background: rgb(10 10 26 / 72%);
+		backdrop-filter: blur(6px);
+		color: #fff;
+		font-size: 0.75rem;
+		font-weight: 600;
+	}
+
+	&__body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 0.65rem;
+		padding: clamp(1.1rem, 2vw, 1.5rem);
+	}
+
+	&__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0;
+		font-size: 0.8rem;
+	}
+
+	&__type {
+		color: $muted;
+	}
+
+	&__title {
+		margin: 0;
+		font-size: clamp(1.15rem, 1rem + 0.5vw, 1.35rem);
+		line-height: 1.25;
+
+		a {
+			color: $text;
+			text-decoration: none;
+
+			// O cartão inteiro é clicável pelo link do título.
+			&::after {
+				content: "";
+				position: absolute;
+				inset: 0;
+				z-index: 1;
+			}
+
+			&:focus-visible {
+				outline: none;
+			}
+		}
+	}
+
+	&:has(&__title a:focus-visible) {
+		outline: 2px solid $secondary;
+		outline-offset: 3px;
+	}
+
+	&__text {
+		margin: 0;
+		color: $muted;
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+
+	&__tech {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		li {
+			padding: 0.2rem 0.6rem;
+			border: 1px solid $border;
+			border-radius: 6px;
+			color: $muted;
+			font-size: 0.75rem;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1rem;
+		margin-top: auto;
+		padding-top: 0.5rem;
+		font-size: 0.9rem;
+	}
+
+	&__more {
+		color: $text;
+		font-weight: 600;
+	}
+
+	&__price {
+		color: $secondary;
+		font-weight: 600;
+	}
+
+	&__demo {
+		position: relative;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+		margin-left: auto;
+		padding: 0 1rem;
+		border: 1px solid $border;
+		border-radius: 999px;
+		color: $text;
+		font-weight: 500;
+		text-decoration: none;
+		transition: border-color 0.2s, background-color 0.2s;
+
+		&:hover,
+		&:focus-visible {
+			border-color: $secondary;
+			background: color-mix(in srgb, $secondary 12%, transparent);
+		}
+	}
+}
+
+.rolck-arrow {
+	display: inline-block;
+	transition: transform 0.3s $ease;
+
+	.rolck-card:hover & {
+		transform: translateX(4px);
+	}
+}
+
+// ── paginação dos arquivos ──
+.rolck-pagination {
+	margin-top: 2.5rem;
+
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	a,
+	span {
+		display: grid;
+		place-items: center;
+		min-width: 2.75rem;
+		height: 2.75rem;
+		padding: 0 0.75rem;
+		border: 1px solid $border;
+		border-radius: 999px;
+		color: $text;
+		text-decoration: none;
+	}
+
+	.current {
+		border-color: transparent;
+		background: $brand-strong;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.rolck-card,
+	.rolck-card__image,
+	.rolck-arrow {
+		transition: none;
+	}
+}

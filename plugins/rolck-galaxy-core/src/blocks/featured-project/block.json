@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/featured-project",
+	"version": "1.0.0",
+	"title": "Projeto em destaque",
+	"category": "rolck-galaxy",
+	"description": "Um projeto em tamanho grande: capa, resumo, destaques e botões de demo e compra.",
+	"keywords": [ "destaque", "projeto", "spotlight", "lançamento" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"projectId": { "type": "number", "default": 0 },
+		"eyebrow": { "type": "string", "default": "" },
+		"reverse": { "type": "boolean", "default": false },
+		"eager": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": { "margin": true, "padding": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": [ "file:./style-index.css", "rolck-ui" ],
+	"render": "file:./render.php"
+}

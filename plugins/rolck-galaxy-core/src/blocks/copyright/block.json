@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/copyright",
+	"version": "1.0.0",
+	"title": "Copyright",
+	"category": "rolck-galaxy",
+	"description": "© ano atual + nome da empresa + texto de direitos, no idioma da página.",
+	"keywords": [ "copyright", "rodapé", "direitos" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"showMadeWith": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"html": false,
+		"spacing": { "margin": true },
+		"typography": { "fontSize": true },
+		"color": { "text": true }
+	},
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

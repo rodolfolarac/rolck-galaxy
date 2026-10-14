@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/contact-info",
+	"version": "1.0.0",
+	"title": "Dados de contato",
+	"category": "rolck-galaxy",
+	"description": "E-mail, telefone, WhatsApp e endereço cadastrados em Rolck Galaxy → Geral.",
+	"keywords": [ "contato", "email", "whatsapp", "telefone" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"fields": { "type": "array", "default": [ "email", "whatsapp", "phone", "address" ] },
+		"layout": { "type": "string", "default": "stack", "enum": [ "stack", "inline" ] }
+	},
+	"supports": {
+		"html": false,
+		"spacing": { "margin": true },
+		"typography": { "fontSize": true }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,123 @@
+@use "../../shared/tokens" as *;
+
+.rolck-details {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+
+	&__top {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+
+	&__price {
+		margin: 0;
+		background: $brand;
+		background-clip: text;
+		color: transparent;
+		font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	&__actions {
+		display: grid;
+		gap: 0.65rem;
+	}
+
+	&__box {
+		padding: 1.25rem 1.35rem;
+		border: 1px solid $border;
+		border-radius: $radius;
+		background: color-mix(in srgb, $surface 85%, transparent);
+	}
+
+	&__heading {
+		margin: 0 0 0.9rem;
+		color: $muted;
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	&__specs {
+		display: grid;
+		gap: 0.75rem;
+		margin: 0;
+
+		> div {
+			display: flex;
+			justify-content: space-between;
+			gap: 1rem;
+			padding-bottom: 0.75rem;
+			border-bottom: 1px solid $border;
+
+			&:last-child {
+				padding-bottom: 0;
+				border-bottom: 0;
+			}
+		}
+
+		dt {
+			flex: none;
+			color: $muted;
+			font-size: 0.9rem;
+		}
+
+		dd {
+			margin: 0;
+			font-weight: 500;
+			text-align: right;
+		}
+	}
+
+	&__stack {
+		flex-direction: column;
+
+		ul {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.4rem;
+			margin: 0.25rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		li {
+			padding: 0.2rem 0.6rem;
+			border: 1px solid $border;
+			border-radius: 6px;
+			font-size: 0.8rem;
+		}
+	}
+
+	&__highlights {
+		display: grid;
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		li {
+			position: relative;
+			padding-left: 1.75rem;
+			line-height: 1.5;
+
+			&::before {
+				content: "";
+				position: absolute;
+				top: 0.3em;
+				left: 0;
+				width: 1.1rem;
+				height: 1.1rem;
+				border-radius: 50%;
+				background: $brand-strong;
+				mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm4.3 6.3L10.5 14l-2.8-2.8-1.4 1.4 4.2 4.2 7.2-7.1-1.4-1.4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+			}
+		}
+	}
+}

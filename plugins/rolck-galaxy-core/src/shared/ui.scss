@@ -1,0 +1,90 @@
+// Peças de interface compartilhadas pelos blocos
+// (botões e selos de status). Registrado como o estilo "rolck-ui" e
+// carregado só quando um bloco que usa aparece.
+@use "./tokens" as *;
+
+// Botões dos blocos (mesmo visual dos botões do tema).
+.rolck-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	min-height: 3rem;
+	padding: 0 1.4rem;
+	border: 1px solid transparent;
+	border-radius: 999px;
+	font: inherit; // <button> não herda a fonte do site sozinho.
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform 0.2s $ease, box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+
+	&--primary {
+		background: $brand-strong;
+		color: #fff;
+
+		&:hover,
+		&:focus-visible {
+			transform: translateY(-2px);
+			box-shadow: 0 14px 30px -12px color-mix(in srgb, $primary 70%, transparent);
+			color: #fff;
+		}
+	}
+
+	&--ghost {
+		border-color: $border;
+		color: $text;
+
+		&:hover,
+		&:focus-visible {
+			border-color: $secondary;
+			background: color-mix(in srgb, $secondary 10%, transparent);
+			color: $text;
+		}
+	}
+}
+
+// ── selos de status ──
+.rolck-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.2rem 0.65rem;
+	border-radius: 999px;
+	font-size: 0.75rem;
+	font-weight: 600;
+
+	&::before {
+		content: "";
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: currentcolor;
+	}
+
+	&--available {
+		background: color-mix(in srgb, $success 14%, transparent);
+		color: #4ade80;
+	}
+
+	&--soon {
+		background: color-mix(in srgb, $warning 14%, transparent);
+		color: #fbbf24;
+	}
+
+	&--development {
+		background: color-mix(in srgb, $secondary 14%, transparent);
+		color: #67e8f9;
+	}
+}
+
+
+.rolck-sr-only {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
