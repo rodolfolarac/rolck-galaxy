@@ -10,6 +10,7 @@
 	}
 
 	&__list {
+		position: relative;
 		display: inline-flex;
 		margin: 0;
 		padding: 3px;
@@ -17,9 +18,33 @@
 		border: 1px solid var(--wp--preset--color--border, #2b2b4a);
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--wp--preset--color--surface, #14142a) 70%, transparent);
+
+		// Pílula única que desliza (só com JavaScript).
+		// Sem ele, o próprio link atual tem o fundo.
+		&::before {
+			content: "";
+			position: absolute;
+			top: 3px;
+			bottom: 3px;
+			left: 0;
+			width: var(--rolck-lang-w, 0);
+			border-radius: 999px;
+			background: var(--wp--preset--gradient--brand-strong, linear-gradient(90deg, #7c3aed, #2563eb 55%, #0e7490));
+			box-shadow: 0 6px 18px -6px rgb(124 58 237 / 70%);
+			opacity: 0;
+			transform: translateX(var(--rolck-lang-x, 0));
+		}
+
+		&.is-ready::before {
+			opacity: 1;
+			transition:
+				transform 0.32s cubic-bezier(0.65, 0, 0.35, 1),
+				width 0.32s cubic-bezier(0.65, 0, 0.35, 1);
+		}
 	}
 
 	&__link {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -43,5 +68,16 @@
 			color: #fff;
 			background: var(--wp--preset--gradient--brand-strong, linear-gradient(90deg, #7c3aed, #2563eb 55%, #0e7490));
 		}
+
+		.is-ready &[aria-current="true"] {
+			background: none;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.rolck-lang__list.is-ready::before {
+		transition: none;
 	}
 }

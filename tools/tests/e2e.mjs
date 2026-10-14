@@ -181,8 +181,20 @@ page.on( 'console', ( m ) => m.type() === 'error' && errors.push( m.text() ) );
 
 console.log( '\nIdiomas' );
 await page.goto( BASE + '/projetos/galaxy-academy/' );
+const pill = () =>
+	page.locator( '.rolck-header .rolck-lang__list' ).evaluate( ( list ) => ( {
+		ready: list.classList.contains( 'is-ready' ),
+		x: list.style.getPropertyValue( '--rolck-lang-x' ),
+	} ) );
+const before = await pill();
 await page.locator( '.rolck-header .rolck-lang__link[hreflang="en"]' ).click();
-await page.waitForLoadState( 'domcontentloaded' );
+const during = await pill();
+check(
+	'pílula do seletor desliza até o idioma clicado antes de trocar a página',
+	before.ready && during.x && during.x !== before.x,
+	JSON.stringify( { before, during } )
+);
+await page.waitForURL( BASE + '/en/projects/galaxy-academy/' );
 check(
 	'seletor PT → EN abre a versão traduzida do projeto',
 	page.url() === BASE + '/en/projects/galaxy-academy/',
@@ -206,7 +218,7 @@ check(
 await page
 	.locator( '.rolck-header .rolck-lang__link[hreflang="pt-BR"]' )
 	.click();
-await page.waitForLoadState( 'domcontentloaded' );
+await page.waitForURL( BASE + '/projetos/galaxy-academy/' );
 check(
 	'seletor EN → PT volta para a versão em português',
 	page.url() === BASE + '/projetos/galaxy-academy/',

@@ -14,10 +14,12 @@
 	},
 	"supports": {
 		"html": false,
+		"interactivity": true,
 		"spacing": { "margin": true },
 		"typography": { "fontSize": true }
 	},
 	"editorScript": "file:./index.js",
 	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js",
 	"render": "file:./render.php"
 }

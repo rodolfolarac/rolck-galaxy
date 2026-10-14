@@ -24,9 +24,26 @@
 			animation-direction: reverse;
 		}
 
+		&--b2 {
+			animation-duration: 56s;
+		}
+
 		&--c {
 			animation-duration: 32s;
 		}
+
+		&--d {
+			animation-duration: 24s;
+			animation-direction: reverse;
+		}
+
+		&--e {
+			animation-duration: 120s;
+		}
+	}
+
+	&__twinkle {
+		animation: rolck-twinkle 4s ease-in-out infinite;
 	}
 
 	&__blob {
@@ -107,10 +124,18 @@
 	}
 }
 
+@keyframes rolck-twinkle {
+
+	50% {
+		opacity: 0.15;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 
 	.rolck-cosmic__orbit,
 	.rolck-cosmic__blob,
+	.rolck-cosmic__twinkle,
 	.rolck-cosmic__chip {
 		animation: none;
 	}
