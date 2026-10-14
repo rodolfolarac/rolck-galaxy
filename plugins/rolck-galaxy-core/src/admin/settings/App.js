@@ -17,6 +17,7 @@ import Texts from './tabs/Texts';
 import Performance from './tabs/Performance';
 import Integrations from './tabs/Integrations';
 import Appearance from './tabs/Appearance';
+import Privacy from './tabs/Privacy';
 
 const boot = window.rolckSettings;
 
@@ -30,6 +31,7 @@ const TABS = [
 	{ name: 'texts', title: 'Textos do site', Component: Texts },
 	{ name: 'performance', title: 'Desempenho', Component: Performance },
 	{ name: 'integrations', title: 'Integrações', Component: Integrations },
+	{ name: 'privacy', title: 'Privacidade (LGPD)', Component: Privacy },
 ];
 
 /**

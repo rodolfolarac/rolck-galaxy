@@ -18,6 +18,19 @@
 		}
 	}
 
+	// Invólucro com papel de item de lista; o cartão ocupa a altura toda.
+	&__item {
+		display: flex;
+
+		&[hidden] {
+			display: none;
+		}
+
+		> .rolck-card {
+			flex: 1;
+		}
+	}
+
 	&__empty {
 		color: $muted;
 		text-align: center;

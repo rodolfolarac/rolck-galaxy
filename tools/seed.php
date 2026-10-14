@@ -483,46 +483,11 @@ rolck_seed_pair(
 	static fn() => $rolck_page( 'blog', 'Blog', 'Behind the scenes, tutorials and news about Rolck Galaxy themes and products.', '', '' )
 );
 
-rolck_seed_pair(
-	static fn() => $rolck_page(
-		'politica-de-privacidade',
-		'Política de privacidade',
-		'Como a Rolck Galaxy trata os dados enviados pelo site.',
-		rolck_seed_blocks(
-			array(
-				array( 'p', '<strong>Revise este texto com a sua assessoria jurídica antes de publicar.</strong> Ele descreve o que este site faz de fato com dados pessoais.' ),
-				array( 'h2', 'Quais dados coletamos' ),
-				array( 'p', 'Pelo formulário de contato: nome, e-mail, assunto e mensagem. Guardamos também o endereço IP por até 10 minutos, só para limitar envios automáticos (spam).' ),
-				array( 'h2', 'Para que usamos' ),
-				array( 'p', 'Exclusivamente para responder ao seu contato. Não vendemos nem compartilhamos seus dados com terceiros.' ),
-				array( 'h2', 'Cookies e estatísticas' ),
-				array( 'p', 'O site não usa cookies de publicidade. Se o Google Analytics estiver ativado, ele só é carregado depois que você interage com a página.' ),
-				array( 'h2', 'Seus direitos (LGPD)' ),
-				array( 'p', 'Você pode pedir acesso, correção ou exclusão dos seus dados a qualquer momento pelo e-mail informado na página de contato.' ),
-			)
-		),
-		''
-	),
-	static fn() => $rolck_page(
-		'privacy-policy',
-		'Privacy policy',
-		'How Rolck Galaxy handles data sent through this website.',
-		rolck_seed_blocks(
-			array(
-				array( 'p', '<strong>Have this text reviewed by your legal advisor before publishing.</strong> It describes what this site actually does with personal data.' ),
-				array( 'h2', 'What we collect' ),
-				array( 'p', 'Through the contact form: name, email, subject and message. We also keep your IP address for up to 10 minutes, only to rate-limit automated submissions (spam).' ),
-				array( 'h2', 'How we use it' ),
-				array( 'p', 'Only to reply to your message. We never sell or share your data with third parties.' ),
-				array( 'h2', 'Cookies and analytics' ),
-				array( 'p', 'The site uses no advertising cookies. If Google Analytics is enabled, it only loads after you interact with the page.' ),
-				array( 'h2', 'Your rights (GDPR / LGPD)' ),
-				array( 'p', 'You can request access to, correction or deletion of your data at any time through the email on the contact page.' ),
-			)
-		),
-		''
-	)
+[ $rolck_privacy_pt ] = rolck_seed_pair(
+	static fn() => $rolck_page( 'politica-de-privacidade', 'Política de privacidade', 'Como a Rolck Galaxy trata dados pessoais e cookies, conforme a LGPD.', rolck_seed_pattern( 'privacy-policy' ), '' ),
+	static fn() => $rolck_page( 'privacy-policy', 'Privacy policy', 'How Rolck Galaxy handles personal data and cookies under Brazil’s LGPD.', rolck_seed_pattern( 'privacy-policy' ), '' )
 );
+update_option( 'wp_page_for_privacy_policy', $rolck_privacy_pt );
 rolck_seed_log( 'Páginas: Início, Serviços, Sobre, Contato, Blog e Privacidade (pt + en)' );
 
 // ── 7. Artigo ────────────────────────────────────────────────────────────

@@ -4,6 +4,8 @@
  *
  *   npm run test:pagespeed               todas as páginas
  *   npm run test:pagespeed -- /en/       uma página
+ *   DESKTOP=1 npm run test:pagespeed     modo computador
+ *   BASE=https://rolckgalaxy.com npm run test:pagespeed   site no ar
  *
  * Atenção: localmente o PHP roda em WebAssembly e responde bem mais devagar
  * que um servidor de verdade; o tempo do servidor (TTFB) puxa a nota de
@@ -23,7 +25,11 @@ import { fileURLToPath } from 'node:url';
 
 const root = join( dirname( fileURLToPath( import.meta.url ) ), '..', '..' );
 const BASE = process.env.BASE || 'http://127.0.0.1:9500';
-const out = join( root, 'tools/tests/results/lighthouse' );
+const out = join(
+	root,
+	'tools/tests/results/lighthouse',
+	new URL( BASE ).hostname.replace( /\W+/g, '-' )
+);
 mkdirSync( out, { recursive: true } );
 
 const chrome = join(
@@ -49,12 +55,26 @@ const pages = process.argv.slice( 2 ).length
 	: [
 			'/',
 			'/en/',
-			'/projetos/',
-			'/projetos/galaxy-academy/',
-			'/blog/',
-			'/site-wordpress-sem-plugins/',
+			'/servicos/',
+			'/en/services/',
+			'/sobre/',
+			'/en/about/',
 			'/contato/',
+			'/en/contact/',
+			'/projetos/',
+			'/en/projects/',
+			'/projetos/galaxy-academy/',
+			'/en/projects/galaxy-academy/',
+			'/projetos/galaxy-cards/',
+			'/projetos/galaxy-health/',
+			'/blog/',
+			'/en/blog/',
+			'/site-wordpress-sem-plugins/',
+			'/en/wordpress-site-no-plugins/',
+			'/politica-de-privacidade/',
+			'/en/privacy-policy/',
 		];
+const desktop = !! process.env.DESKTOP;
 const rows = [];
 const work = mkdtempSync( join( tmpdir(), 'rolck-lighthouse-' ) );
 
@@ -62,6 +82,7 @@ for ( const path of pages ) {
 	const file = join(
 		out,
 		( path.replace( /\W+/g, '-' ).replace( /^-|-$/g, '' ) || 'home' ) +
+			( desktop ? '-desktop' : '' ) +
 			'.json'
 	);
 	const run = spawnSync(
@@ -73,6 +94,7 @@ for ( const path of pages ) {
 			`--output-path=${ file }`,
 			'--chrome-flags=--headless=new --no-sandbox',
 			'--only-categories=performance,accessibility,best-practices,seo',
+			...( desktop ? [ '--preset=desktop' ] : [] ),
 		],
 		// No WSL o chrome-launcher cria a pasta temporária com nome de caminho do
 		// Windows na pasta atual; rodando numa pasta temporária, nada sobra no projeto.

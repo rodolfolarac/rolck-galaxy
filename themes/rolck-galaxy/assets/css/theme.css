@@ -18,6 +18,17 @@
 
 /* 1. Base ================================================================= */
 
+/* Fonte de reserva com as medidas da Inter: enquanto a Inter carrega, o texto
+   já ocupa o mesmo espaço e nada pula quando ela chega (CLS zero). */
+@font-face {
+	font-family: "Inter Fallback";
+	src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+	size-adjust: 107.4%;
+	ascent-override: 90.2%;
+	descent-override: 22.48%;
+	line-gap-override: 0%;
+}
+
 html {
 	scroll-behavior: smooth;
 	scroll-padding-top: calc(var(--wp--custom--header--height, 72px) + 1rem);

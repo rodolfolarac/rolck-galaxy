@@ -32,15 +32,25 @@ final class Plugin {
 		Seo\Sitemaps::class,
 		Contact\Form::class,
 		Performance\Optimizations::class,
+		Performance\BrowserCache::class,
 		Integrations\Analytics::class,
+		Privacy\Consent::class,
 		Admin\Menu::class,
 		Admin\EditorAssets::class,
+		Admin\Conflicts::class,
+		Admin\ConsentPage::class,
 	);
 
 	public static function boot(): void {
 		foreach ( self::MODULES as $module ) {
 			$module::register();
 		}
+	}
+
+	/** Na desativação: tira o bloco do .htaccess e regrava as URLs. */
+	public static function deactivate(): void {
+		Performance\BrowserCache::remove();
+		flush_rewrite_rules();
 	}
 
 	/** Na ativação: registra os tipos e regrava as URLs amigáveis. */

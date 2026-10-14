@@ -49,4 +49,4 @@ RolckGalaxy\Core\I18n\Router::boot();
 add_action( 'plugins_loaded', array( RolckGalaxy\Core\Plugin::class, 'boot' ) );
 
 register_activation_hook( __FILE__, array( RolckGalaxy\Core\Plugin::class, 'activate' ) );
-register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
+register_deactivation_hook( __FILE__, array( RolckGalaxy\Core\Plugin::class, 'deactivate' ) );

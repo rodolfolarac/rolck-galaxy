@@ -1,11 +1,11 @@
-import { LongText, Section, Text, Toggle } from '../fields';
+import { LongText, Section, Select, Text, Toggle } from '../fields';
 
 export default function Integrations() {
 	return (
 		<>
 			<Section
 				title="Google Analytics 4"
-				description="Opcional. Visitas de quem está logado não são contadas."
+				description="Opcional. Visitas de quem está logado não são contadas. Com o aviso de cookies ligado, só carrega para quem aceitar a categoria Estatística."
 			>
 				<Text
 					path="integrations.ga4_id"
@@ -27,6 +27,25 @@ export default function Integrations() {
 					label="HTML"
 					rows={ 6 }
 					code
+				/>
+				<Select
+					path="integrations.head_code_category"
+					label="Esse código usa cookies de…"
+					help="Define em qual categoria do aviso de cookies ele entra. Fora de Necessários, só roda depois do aceite."
+					options={ [
+						{
+							label: 'Marketing (pixels, anúncios)',
+							value: 'marketing',
+						},
+						{
+							label: 'Estatística (análise de visitas)',
+							value: 'analytics',
+						},
+						{
+							label: 'Necessários (não usa cookies opcionais)',
+							value: 'necessary',
+						},
+					] }
 				/>
 			</Section>
 		</>

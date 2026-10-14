@@ -6,11 +6,15 @@
  * quando o visitante rola, toca ou move o mouse — ele não entra na medição
  * do PageSpeed e não atrasa a primeira pintura.
  *
+ * Com o aviso de cookies (LGPD) ligado, os dois saem inativos e só rodam
+ * depois que o visitante aceita a categoria (ver Privacy\Consent).
+ *
  * @package RolckGalaxy
  */
 
 namespace RolckGalaxy\Core\Integrations;
 
+use RolckGalaxy\Core\Privacy\Consent;
 use RolckGalaxy\Core\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -26,9 +30,16 @@ final class Analytics {
 
 	public static function head_code(): void {
 		$code = (string) Settings::get( 'integrations.head_code', '' );
-		if ( '' !== trim( $code ) ) {
-			echo $code . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- código colado por administrador (unfiltered_html).
+		if ( '' === trim( $code ) ) {
+			return;
 		}
+		$category = Consent::head_code_category();
+		if ( Consent::enabled() && 'necessary' !== $category ) {
+			// <template> não executa nada até o JavaScript do aviso copiar o conteúdo.
+			echo '<template data-rolck-consent="' . esc_attr( $category ) . '">' . $code . "</template>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- código colado por administrador (unfiltered_html).
+			return;
+		}
+		echo $code . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- código colado por administrador (unfiltered_html).
 	}
 
 	public static function ga4(): void {
@@ -37,8 +48,10 @@ final class Analytics {
 			return;
 		}
 		$lazy = (bool) Settings::get( 'integrations.ga4_on_input', true );
+		// Sem consentimento, o script fica como texto (o navegador não executa).
+		$attrs = Consent::enabled() ? ' type="text/plain" data-rolck-consent="analytics"' : '';
 		?>
-<script>
+<script<?php echo $attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- atributos fixos. ?>>
 (function(){
 	var id = <?php echo wp_json_encode( $id ); ?>, done = false;
 	window.dataLayer = window.dataLayer || [];

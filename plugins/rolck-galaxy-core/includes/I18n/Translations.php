@@ -41,6 +41,7 @@ final class Translations {
 		if ( ! is_admin() ) {
 			add_filter( 'option_page_on_front', array( self::class, 'translate_page_option' ) );
 			add_filter( 'option_page_for_posts', array( self::class, 'translate_page_option' ) );
+			add_filter( 'option_wp_page_for_privacy_policy', array( self::class, 'translate_page_option' ) );
 			add_action( 'template_redirect', array( self::class, 'redirect_wrong_language' ), 1 );
 		}
 
@@ -355,7 +356,7 @@ final class Translations {
 	}
 
 	/**
-	 * Em /en/, a página inicial e a página do blog viram as versões em inglês.
+	 * Em /en/, a página inicial, a do blog e a de privacidade viram as versões em inglês.
 	 *
 	 * @param mixed $id ID salvo nas Configurações → Leitura.
 	 */

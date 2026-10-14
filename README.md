@@ -3,15 +3,18 @@
 Site institucional da Rolck Galaxy e vitrine com demo ao vivo dos projetos (um canal próprio de venda dos
 temas, além de apresentar a empresa), em **português e inglês** com **tradução automática**, feito só com recursos nativos do WordPress: tema de blocos,
 `theme.json`, blocos próprios criados com `@wordpress/scripts` (a base do `create-block`), Interactivity API e
-REST API. **Nenhum plugin de terceiros**: idiomas, SEO, formulário de contato e otimizações estão no plugin
-próprio `rolck-galaxy-core`.
+REST API. **Nenhum plugin de terceiros**: idiomas, SEO, formulário de contato, aviso de cookies (LGPD) e
+otimizações estão no plugin próprio `rolck-galaxy-core`.
 
-| Medição (Lighthouse, celular, site local) | Performance | Acessibilidade | Boas práticas | SEO |
+| Medição (Lighthouse) | Performance | Acessibilidade | Boas práticas | SEO |
 |---|---|---|---|---|
-| Home, projeto, vitrine, blog, artigo, contato e home em inglês | 96–100 | 100 | 100 | 100 |
+| Site no ar (HostGator), 20 páginas, computador | 100 | 100 | 100 | 100* |
+| Site no ar (HostGator), 20 páginas, celular | 99–100 | 100 | 100 | 100* |
+| Site local, celular | 96–100 | 100 | 100 | 100 |
 
-Localmente o PHP roda em WebAssembly (~650 ms por página). Esse é o único item reprovado pelo Lighthouse, e
-ele some num servidor de verdade com cache.
+\* 92 nas páginas em inglês enquanto o plugin Yoast SEO (instalado pela hospedagem) estiver ativo: ele gera
+um segundo canonical. O painel avisa quais plugins desativar. Localmente o PHP roda em WebAssembly (~700 ms
+por página), o que tira alguns pontos de performance que um servidor de verdade não perde.
 
 ---
 
@@ -48,8 +51,8 @@ npx playwright-core install chromium
 | `npm run build` | Compila blocos, painéis do editor, tela de configurações e minifica o CSS do tema |
 | `npm run start` | Recompila sozinho a cada alteração em `src/` |
 | `npm run dev` | WordPress local com tudo instalado |
-| `npm run test:e2e` | 80 testes, incluindo tradução automática (com o tradutor de teste, sem custo): rotas, SEO, idiomas, vitrine, formulário, painel, tradução, blocos válidos, layout em 8 larguras |
-| `npm run test:pagespeed` | Lighthouse (motor do PageSpeed) nas páginas principais |
+| `npm run test:e2e` | 94 testes, incluindo tradução automática (com o tradutor de teste, sem custo): rotas, SEO, idiomas, vitrine, formulário, aviso de cookies (LGPD), painel, tradução, blocos válidos, layout em 8 larguras |
+| `npm run test:pagespeed` | Lighthouse (motor do PageSpeed) em 20 páginas. `DESKTOP=1` mede no modo computador e `BASE=https://rolckgalaxy.com` mede o site no ar |
 | `npm run lint:js` / `npm run lint:css` | Padrão oficial do WordPress |
 | `npm run covers` | Regera logo, ícone, imagem de compartilhamento e capas da demo |
 | `npm run package` | Gera em `dist/` o tema, o plugin e o instalador do conteúdo inicial |
@@ -66,9 +69,12 @@ npx playwright-core install chromium
    "Rolck Galaxy — Conteúdo inicial". (Com SSH/WP-CLI, o mesmo: `wp eval-file seed.php`.)
 5. **Rolck Galaxy → Configurações**: e-mail, WhatsApp, redes sociais e verificação do Google. Em **Projetos**, o
    link de demo e o link de compra de cada produto.
-6. Use o cache de página da hospedagem (LiteSpeed, NGINX, Cloudflare). É ele que leva o tempo de resposta do
+6. **Plugins**: desative e exclua os plugins que a hospedagem instala e que repetem o que o site já faz, como
+   Yoast SEO (canonical e sitemap em dobro) e avisos de cookies (ex.: CookieAdmin). O painel lista os que
+   estiverem ativos. Em **Configurações → Privacidade**, escolha a página da política de privacidade.
+7. Use o cache de página da hospedagem (LiteSpeed, NGINX, Cloudflare). É ele que leva o tempo de resposta do
    servidor para perto de 100 ms e fecha a nota 100 de performance, sem plugin.
-7. Envie `https://seusite.com/wp-sitemap.xml` no Google Search Console e no Bing Webmaster Tools.
+8. Envie `https://seusite.com/wp-sitemap.xml` no Google Search Console e no Bing Webmaster Tools.
 
 **Cópia de segurança do código:** `npm run backup` gera `backups/rolck-galaxy-codigo-AAAA-MM-DD.zip` (sem
 `node_modules`, build, site local e `.env.local`). Para restaurar: descompacte, `npm install` e `npm run build`.
@@ -111,6 +117,10 @@ Sem os secrets, o deploy é pulado com um aviso e o resto do workflow roda norma
 | Tradução de uma página, post ou projeto | Painel lateral **Idioma e tradução** → "Criar versão em English" |
 | Nome em inglês de categorias e tecnologias | Campos "Nome em English" e "Descrição em English" de cada termo |
 | Mensagens do formulário | **Rolck Galaxy → Mensagens** |
+| Aviso de cookies (validade, registro, encarregado) | **Rolck Galaxy → Configurações → Privacidade (LGPD)** |
+| Textos do aviso de cookies | **Rolck Galaxy → Configurações → Textos do site** → "Privacidade (LGPD)" |
+| Registros de consentimento (busca e CSV) | **Rolck Galaxy → Consentimentos** |
+| Política de privacidade | Página escolhida em **Configurações → Privacidade**; texto pronto no padrão "Política de privacidade (LGPD)" |
 
 ## Tradução automática
 
@@ -145,6 +155,34 @@ arquivo por serviço em `Providers/`; para acrescentar um serviço, crie a class
 - Para acrescentar um idioma (ex.: espanhol): inclua-o em `Languages::LIST`, crie as partes `header-es.html`
   e `footer-es.html` e traduza os textos.
 
+## Privacidade (LGPD) inclusa
+
+Aviso de cookies próprio, feito a partir da LGPD (Lei 13.709/2018), do Guia Orientativo de Cookies da ANPD e
+do Marco Civil da Internet:
+
+- **Categorias só quando usadas.** Sem Google Analytics nem código de terceiros, o aviso diz que o site usa só
+  cookies necessários e mostra apenas "Entendi" e "Ver detalhes". Ao ligar uma integração, a categoria aparece
+  sozinha e o aviso volta para quem ainda não foi perguntado sobre ela.
+- **Nada opcional roda antes do aceite.** O Google Analytics e o código extra do `<head>` saem inativos
+  (`type="text/plain"` / `<template>`) e só rodam depois que o visitante aceita a categoria. Nenhuma opção
+  vem pré-marcada, e "Rejeitar opcionais" tem o mesmo destaque de "Aceitar todos".
+- **Mudar de ideia a qualquer momento**: link "Preferências de cookies" no rodapé. Retirar um consentimento
+  apaga os cookies do Analytics e recarrega a página sem ele.
+- **Prova do consentimento** (art. 8º, § 2º): cada escolha vira um registro com código, data e hora, versão
+  do aviso e categorias. O IP não é guardado, só um hash HMAC dele. Os registros ficam em **Rolck Galaxy →
+  Consentimentos**, com busca pelo código que o visitante vê nas preferências e exportação em CSV. São apagados
+  sozinhos depois do prazo de guarda (padrão: 60 meses).
+- **Tabela de cookies automática**: o bloco "Tabela de cookies" lista nome, quem define, finalidade e duração,
+  conforme as integrações ligadas. Ele aparece também na política de privacidade.
+- **Sem custo no PageSpeed**: o aviso já vem no HTML, sem atrasar a primeira pintura nem deslocar o layout.
+  O script tem 4 KB (cerca de 2 KB comprimido), carrega com `defer` e o HTML continua igual para todos (o cache de página funciona).
+
+O padrão **"Política de privacidade (LGPD)"** traz um texto completo, que descreve o que o site faz de fato.
+Revise-o com a sua assessoria jurídica antes de publicar.
+
+Código: `includes/Privacy/` (`Consent`, `ConsentLog`), `includes/Admin/ConsentPage.php`, `src/consent/` e o bloco
+`src/blocks/cookie-table/`.
+
 ## SEO técnico incluso
 
 Título e descrição por página (com padrão automático), canonical, `hreflang`, Open Graph e cartão do X,
@@ -157,7 +195,10 @@ BreadcrumbList, BlogPosting, SoftwareApplication (projetos, com preço quando in
 CSS só dos blocos usados e embutido no HTML (nenhum CSS bloqueando a renderização), fonte Inter local
 (48 KB, pré-carregada), JavaScript no site limitado a módulos pequenos da Interactivity API (0,4–1 KB cada),
 imagens responsivas geradas em WebP, Speculation Rules (próxima página pré-renderizada), sem emojis, oEmbed,
-XML-RPC nem Dashicons para visitantes. Google Analytics opcional, carregado só na primeira interação.
+XML-RPC nem Dashicons para visitantes. Fonte de reserva com as medidas da Inter (o texto não pula quando a
+fonte chega). Em Apache/LiteSpeed (HostGator), regras próprias no `.htaccess` deixam fontes, imagens, CSS e JS
+em cache por 1 ano e comprimem o HTML. Google Analytics opcional, carregado só na primeira interação e depois
+do consentimento.
 
 ---
 
@@ -174,13 +215,15 @@ plugins/rolck-galaxy-core/          Funcionalidades (PHP 8.1+, namespaces, autol
     Seo/                            Meta, Head, Schema, Breadcrumbs, Sitemaps
     Blocks/                         Registry (registro automático), ProjectCard (cartão compartilhado)
     Contact/Form.php                Rota REST, antispam, caixa de mensagens
-    Performance/Optimizations.php   Enxugamento do WordPress
-    Integrations/Analytics.php      GA4 opcional e código extra no <head>
-    Admin/                          Menu + tela React, painéis do editor, coluna de idioma nas listas
+    Performance/                    Optimizations (enxugamento do WordPress), BrowserCache (.htaccess)
+    Integrations/Analytics.php      GA4 opcional e código extra no <head> (só depois do consentimento)
+    Privacy/                        Consent (aviso de cookies, REST), ConsentLog (registro de consentimentos)
+    Admin/                          Menu + tela React, painéis do editor, coluna de idioma, consentimentos, aviso de plugins conflitantes
   src/
     blocks/<bloco>/                 block.json, index.js (editor React), render.php (HTML no servidor), style.scss, view.js
     editor/                         Painéis do editor: idioma, SEO, detalhes do projeto
     admin/settings/                 Tela Rolck Galaxy → Configurações (App, fields, tabs/)
+    consent/                        JavaScript e CSS do aviso de cookies
     shared/                         Tokens SCSS, ícones, CSS compartilhado (rolck-ui)
   build/                            Gerado pelo npm run build
 
@@ -196,7 +239,7 @@ tools/                              Ambiente local, conteúdo inicial, testes, i
 
 Grade de projetos (com filtro), Projeto em destaque, Ficha do projeto, Seletor de idioma, Formulário de
 contato, Números (contagem animada), Faixa de tecnologias, Visual cósmico, Breadcrumbs, Redes sociais da
-empresa, Dados de contato e Copyright. Todos são dinâmicos (HTML gerado no servidor): mudar a marcação de
+empresa, Dados de contato, Copyright e Tabela de cookies. Todos são dinâmicos (HTML gerado no servidor): mudar a marcação de
 um bloco nunca quebra o conteúdo já salvo.
 
 **Bloco novo:** dentro de `plugins/rolck-galaxy-core/src/blocks/`, rode

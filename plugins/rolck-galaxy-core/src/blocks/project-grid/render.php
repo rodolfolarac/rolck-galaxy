@@ -121,16 +121,18 @@ $rolck_archive      = (string) get_post_type_archive_link( Projects::POST_TYPE )
 	<div class="rolck-projects__grid" role="list">
 		<?php
 		foreach ( array_values( $rolck_posts ) as $rolck_index => $rolck_post ) {
-			$rolck_extra = 'role="listitem" data-wp-bind--hidden="!state.isVisible" ' . wp_interactivity_data_wp_context( array( 'cats' => $rolck_cats[ $rolck_post->ID ] ) );
+			// O papel de item de lista fica num invólucro: <article> não aceita role="listitem".
+			$rolck_extra = $rolck_show_filters ? ' data-wp-bind--hidden="!state.isVisible" ' . wp_interactivity_data_wp_context( array( 'cats' => $rolck_cats[ $rolck_post->ID ] ) ) : '';
+			echo '<div class="rolck-projects__item" role="listitem"' . $rolck_extra . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- contexto gerado por wp_interactivity_data_wp_context().
 			echo ProjectCard::render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- cartão escapado internamente.
 				$rolck_post,
 				array(
-					'heading'     => $attributes['headingLevel'] ?? 'h3',
-					'excerpt'     => ! empty( $attributes['showExcerpt'] ),
-					'eager'       => $rolck_index < (int) ( $attributes['eagerImages'] ?? 0 ),
-					'extra_attrs' => $rolck_show_filters ? $rolck_extra : 'role="listitem"',
+					'heading' => $attributes['headingLevel'] ?? 'h3',
+					'excerpt' => ! empty( $attributes['showExcerpt'] ),
+					'eager'   => $rolck_index < (int) ( $attributes['eagerImages'] ?? 0 ),
 				)
 			);
+			echo '</div>';
 		}
 		?>
 	</div>

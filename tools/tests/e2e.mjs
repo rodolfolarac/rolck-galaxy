@@ -106,7 +106,8 @@ for ( const [ path, lang, other ] of [
 	);
 	check(
 		`${ path }: canonical aponta para ela mesma`,
-		attr( html, /<link rel="canonical" href="([^"]+)"/ ) === BASE + path
+		attr( html, /<link rel="canonical" href="([^"]+)"/ ) === BASE + path &&
+			( html.match( /rel="canonical"/g ) || [] ).length === 1
 	);
 	check(
 		`${ path }: hreflang para a outra versão`,
@@ -251,7 +252,7 @@ await page
 	.click();
 await page.waitForTimeout( 300 );
 const visible = await page
-	.locator( '.rolck-projects__grid .rolck-card:not([hidden])' )
+	.locator( '.rolck-projects__item:not([hidden])' )
 	.count();
 check(
 	'filtro por categoria esconde os outros projetos sem recarregar',
@@ -269,9 +270,18 @@ check(
 await page.locator( '.rolck-filters__item', { hasText: 'Todos' } ).click();
 check(
 	'"Todos" mostra todos de novo',
+	( await page.locator( '.rolck-projects__item:not([hidden])' ).count() ) ===
+		total
+);
+
+check(
+	'cartões em itens de lista válidos (<article> sem role="listitem")',
 	( await page
-		.locator( '.rolck-projects__grid .rolck-card:not([hidden])' )
-		.count() ) === total
+		.locator(
+			'.rolck-projects__item[role="listitem"] > article.rolck-card'
+		)
+		.count() ) === total &&
+		( await page.locator( 'article[role]' ).count() ) === 0
 );
 
 console.log( '\nFormulário de contato' );
@@ -628,14 +638,21 @@ const cta = (
 await api( '/wp/v2/template-parts/rolck-galaxy//cta', 'POST', {
 	content: cta.content.raw.replace( 'Vamos conversar', 'Bora conversar' ),
 } );
+const ctaPt = ( await get( '/projetos/galaxy-academy/' ) ).html;
+const ctaEn = ( await get( '/en/projects/galaxy-academy/' ) ).html;
 check(
 	'chamada final editada em português atualiza a versão em inglês',
-	( await get( '/projetos/galaxy-academy/' ) ).html.includes(
-		'Bora conversar'
-	) &&
-		( await get( '/en/projects/galaxy-academy/' ) ).html.includes(
-			'[EN] Bora conversar'
-		)
+	ctaPt.includes( 'Bora conversar' ) &&
+		ctaEn.includes( '[EN] Bora conversar' ),
+	JSON.stringify( {
+		pt: ( ctaPt.match( /[^>]{0,20}conversar[^<]{0,20}/g ) || [] ).slice(
+			0,
+			3
+		),
+		en: (
+			ctaEn.match( /[^>]{0,30}(talk|conversar)[^<]{0,20}/gi ) || []
+		).slice( 0, 3 ),
+	} )
 );
 
 // Limpeza: volta tudo ao estado de antes do teste.
@@ -658,6 +675,154 @@ check(
 	'limpeza do teste (cabeçalho, páginas, categoria e textos restaurados)',
 	settings.strings.filter_all.en === 'All' &&
 		( await get( '/en/' ) ).html.includes( 'Get in touch' )
+);
+
+// ── Privacidade (LGPD) ──
+console.log( '\nAviso de cookies (LGPD)' );
+await saveSettings( ( s ) => {
+	s.integrations.ga4_id = '';
+} );
+const visitor = async () => {
+	const ctx = await browser.newContext( {
+		viewport: { width: 390, height: 844 },
+	} );
+	return { ctx, page: await ctx.newPage() };
+};
+const isOpen = ( p ) =>
+	p.evaluate( () => document.getElementById( 'rolck-consent-prefs' ).open );
+
+let v = await visitor();
+await v.page.goto( BASE + '/' );
+check(
+	'aviso aparece na primeira visita, já na primeira pintura (sem esperar JavaScript)',
+	( await v.page.isVisible( '#rolck-consent' ) ) &&
+		! ( await get( '/' ) ).html.match( /id="rolck-consent"[^>]*hidden/ )
+);
+check(
+	'sem integrações, o aviso diz que só há cookies necessários e não mostra categorias opcionais',
+	( await v.page.locator( '#rolck-consent' ).innerText() ).includes(
+		'somente cookies necessários'
+	) && ( await v.page.locator( '.rolck-consent-cat__switch' ).count() ) === 0
+);
+const [ logged ] = await Promise.all( [
+	v.page.waitForResponse( ( r ) => r.url().includes( 'rolck/v1/consent' ) ),
+	v.page.click( '#rolck-consent [data-consent="accept"]' ),
+] );
+const firstId = JSON.parse(
+	decodeURIComponent(
+		( await v.ctx.cookies() ).find( ( c ) => c.name === 'rolck_consent' )
+			?.value || '{}'
+	)
+).id;
+check(
+	'"Entendi" guarda a escolha e registra a prova no servidor',
+	logged.status() === 201 && /^[0-9a-f-]{36}$/.test( firstId || '' ),
+	String( logged.status() )
+);
+await v.page.goto( BASE + '/en/' );
+check(
+	'quem já escolheu não vê o aviso de novo (nem no outro idioma)',
+	! ( await v.page.isVisible( '#rolck-consent' ) )
+);
+await v.page.locator( 'a[href$="#cookies"]' ).first().click();
+check(
+	'"Cookie preferences" no rodapé reabre as preferências com o código do registro',
+	( await isOpen( v.page ) ) &&
+		(
+			await v.page.locator( '[data-consent-record]' ).innerText()
+		).includes( firstId )
+);
+await v.ctx.close();
+
+// Com Google Analytics ligado, ele só roda depois do aceite.
+await saveSettings( ( s ) => {
+	s.integrations.ga4_id = 'G-TESTE123';
+} );
+v = await visitor();
+await v.page.goto( BASE + '/sobre/' );
+const gaState = () =>
+	v.page.evaluate( () => ( {
+		inert: !! document.querySelector(
+			'script[type="text/plain"][data-rolck-consent="analytics"]'
+		),
+		running: Array.isArray( window.dataLayer ),
+	} ) );
+let ga = await gaState();
+check(
+	'com Analytics ligado: script fica inativo antes do consentimento',
+	ga.inert && ! ga.running,
+	JSON.stringify( ga )
+);
+check(
+	'"Rejeitar opcionais" e "Aceitar todos" lado a lado, com o mesmo estilo',
+	await v.page.evaluate( () => {
+		const [ a, b ] = [ 'reject', 'accept' ].map( ( k ) =>
+			window.getComputedStyle(
+				document.querySelector(
+					`#rolck-consent [data-consent="${ k }"]`
+				)
+			)
+		);
+		return a.backgroundImage === b.backgroundImage && a.color === b.color;
+	} )
+);
+await v.page.click( '#rolck-consent [data-consent="reject"]' );
+ga = await gaState();
+check( 'rejeitando, o Analytics continua sem rodar', ! ga.running );
+await v.page.locator( 'a[href$="#cookies"]' ).first().click();
+await v.page.locator( '.rolck-consent-cat__switch[name="analytics"]' ).check();
+await v.page.click( '#rolck-consent-prefs [data-consent="save"]' );
+ga = await gaState();
+check(
+	'aceitando Estatística nas preferências, o Analytics passa a rodar sem recarregar',
+	ga.running
+);
+const consentId = JSON.parse(
+	decodeURIComponent(
+		( await v.ctx.cookies() ).find( ( c ) => c.name === 'rolck_consent' )
+			?.value || '{}'
+	)
+).id;
+await v.page.locator( 'a[href$="#cookies"]' ).first().click();
+await v.page
+	.locator( '.rolck-consent-cat__switch[name="analytics"]' )
+	.uncheck();
+await Promise.all( [
+	v.page.waitForEvent( 'load' ),
+	v.page.click( '#rolck-consent-prefs [data-consent="save"]' ),
+] );
+ga = await gaState();
+check(
+	'retirar o consentimento recarrega a página sem o Analytics',
+	! ga.running && ga.inert
+);
+await v.ctx.close();
+
+await saveSettings( ( s ) => {
+	s.integrations.ga4_id = '';
+} );
+await admin.goto(
+	`${ BASE }/wp-admin/admin.php?page=rolck-consents&consent=${ consentId }`
+);
+const logText = await admin
+	.locator( '.wp-list-table, table.widefat' )
+	.innerText();
+check(
+	'registro de consentimentos no painel mostra as três escolhas do visitante',
+	logText.includes( 'Rejeitou os opcionais' ) &&
+		logText.includes( 'Aceitou todos' ) &&
+		( logText.match( new RegExp( consentId, 'g' ) ) || [] ).length === 3,
+	logText.slice( 0, 300 )
+);
+await admin.goto( BASE + '/wp-admin/admin.php?page=rolck-galaxy' );
+const patterns = await api( '/wp/v2/block-patterns/patterns' );
+check(
+	'padrão "Política de privacidade (LGPD)" disponível, com a tabela de cookies automática',
+	( patterns.body || [] ).some(
+		( p ) =>
+			p.name === 'rolck-galaxy/privacy-policy' &&
+			p.content.includes( 'wp:rolck/cookie-table' )
+	)
 );
 
 // Blocos válidos no editor (nenhum aviso de "conteúdo inesperado").

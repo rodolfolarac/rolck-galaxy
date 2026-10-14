@@ -4,6 +4,7 @@
  *   npm run dev              sobe o site (a primeira vez instala tudo e cria a demo)
  *   npm run dev -- --reset   apaga o site local e começa do zero
  *   PORT=8080 npm run dev    outra porta
+ *   PORT=9600 WP_DEV_DIR=/tmp/teste npm run dev   um segundo site, em outra pasta
  *
  * O site fica em .wp-dev/. Tema, plugin e tools/ são montados direto das
  * pastas do projeto: editou, recarregou.
@@ -18,8 +19,10 @@ const b64 = ( text ) => Buffer.from( text ).toString( 'base64' );
 const root = join( dirname( fileURLToPath( import.meta.url ) ), '..', '..' );
 const PORT = Number( process.env.PORT || 9500 );
 const BASE = `http://127.0.0.1:${ PORT }`;
-const DATA = join( root, '.wp-dev' );
-const BLUEPRINT = join( root, '.wp-dev-blueprint.json' );
+const DATA = process.env.WP_DEV_DIR || join( root, '.wp-dev' );
+const BLUEPRINT = process.env.WP_DEV_DIR
+	? DATA + '-blueprint.json'
+	: join( root, '.wp-dev-blueprint.json' );
 const cli = join( root, 'node_modules', '.bin', 'wp-playground-cli' );
 
 if ( ! existsSync( cli ) ) {

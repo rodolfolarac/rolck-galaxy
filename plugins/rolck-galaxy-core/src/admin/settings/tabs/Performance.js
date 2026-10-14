@@ -37,6 +37,11 @@ export default function Performance() {
 					help="Os estilos do tema e dos blocos vão dentro da página em vez de arquivos separados. Remove o CSS que bloqueia a renderização (recomendado)."
 				/>
 				<Toggle
+					path="performance.browser_cache"
+					label="Cache de navegador e compressão"
+					help="Grava regras no .htaccess (Apache/LiteSpeed, como na HostGator): fontes, imagens, CSS e JS ficam 1 ano no navegador de quem volta ao site, e o HTML sai comprimido. As páginas continuam sempre atualizadas."
+				/>
+				<Toggle
 					path="performance.webp_uploads"
 					label="Gerar imagens em WebP"
 					help="Os tamanhos criados a partir de JPEG e PNG enviados saem em WebP, 25–35% menores. Vale para imagens enviadas daqui em diante."

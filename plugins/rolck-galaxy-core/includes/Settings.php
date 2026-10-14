@@ -89,12 +89,23 @@ final class Settings {
 				'disable_dashicons' => true,
 				'webp_uploads'      => true,
 				'inline_css'        => true,
+				'browser_cache'     => true,
 				'speculation'       => 'prerender',
 			),
 			'integrations' => array(
 				'ga4_id'       => '',
 				'ga4_on_input' => true,
 				'head_code'    => '',
+				'head_code_category' => 'marketing',
+			),
+			'privacy'      => array(
+				'enabled'          => true,
+				'version'          => '1',
+				'days'             => 180,
+				'log'              => true,
+				'retention_months' => 60,
+				'dpo_name'         => '',
+				'dpo_email'        => '',
 			),
 			'translation'  => array(
 				'provider'     => '',

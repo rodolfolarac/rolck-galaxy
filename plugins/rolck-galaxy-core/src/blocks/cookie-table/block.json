@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rolck/cookie-table",
+	"version": "1.0.0",
+	"title": "Tabela de cookies",
+	"category": "rolck-galaxy",
+	"description": "Lista dos cookies que o site usa, por categoria, com quem define, finalidade e duração. Atualiza sozinha conforme as integrações ligadas.",
+	"keywords": [ "cookies", "lgpd", "privacidade", "política" ],
+	"textdomain": "rolck-galaxy-core",
+	"attributes": {
+		"headingLevel": { "type": "string", "default": "h3", "enum": [ "h2", "h3", "h4" ] }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide" ],
+		"spacing": { "margin": true }
+	},
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}
