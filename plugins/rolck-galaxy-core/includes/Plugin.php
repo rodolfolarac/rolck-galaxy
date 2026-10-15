@@ -24,6 +24,7 @@ final class Plugin {
 		I18n\AutoTranslate\Sync::class,
 		Content\Projects::class,
 		Content\ProjectRewrites::class,
+		Content\Updates::class,
 		Blocks\Registry::class,
 		Blocks\CoreDefaults::class,
 		Seo\Meta::class,

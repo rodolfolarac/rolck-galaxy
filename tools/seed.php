@@ -317,10 +317,11 @@ $rolck_projects = array(
 			Projects::TECH_TAX => array( 'react', 'typescript', 'nodejs', 'postgresql', 'tailwind' ),
 		),
 		'meta'  => array(
-			'rolck_status'  => 'development',
-			'rolck_version' => '1.0.0',
-			'rolck_compat'  => 'Navegadores modernos, desktop e celular',
-			'rolck_accent'  => '#22d3ee',
+			'rolck_status'   => 'development',
+			'rolck_version'  => '1.0.0',
+			'rolck_compat'   => 'Navegadores modernos, desktop e celular',
+			'rolck_accent'   => '#22d3ee',
+			'rolck_demo_url' => 'https://galaxy-cards.vercel.app/?demo',
 		),
 		'pt'    => array(
 			'title'      => 'Galaxy Cards',
@@ -328,6 +329,7 @@ $rolck_projects = array(
 			'highlights' => array( 'Repetição espaçada em degraus de 15 dias', 'Áudio com vozes neurais, guardado em cache', 'Importação de dezenas de palavras de uma vez', 'Progresso de hoje, 7 e 30 dias', 'Acesso protegido por código (bcrypt + JWT)' ),
 			'content'    => array(
 				array( 'p', 'Galaxy Cards é um baralho pessoal para memorizar vocabulário em inglês. Cada carta tem a palavra, a tradução e uma frase de exemplo, falada em voz nativa. O progresso fica num banco de dados, não no navegador.' ),
+				array( 'p', 'Na demo ao vivo você testa sem código de acesso: ela já vem com palavras de exemplo e guarda tudo só no seu navegador.' ),
 				array( 'h2', 'Como funciona' ),
 				array( 'ul', array( 'Você escolhe 10, 20, 30, 40, 50 ou todas as cartas, sempre em ordem sorteada', 'Cada “fácil” seguido afasta a carta mais 15 dias; no quarto acerto ela vira permanente', '“Difícil” recomeça a escada e a carta volta no próximo baralho', 'Cada resposta grava na hora, e o cronômetro é salvo a cada 15 segundos', 'Aba de progresso com gráfico diário dos últimos 30 dias' ) ),
 			),
@@ -338,6 +340,7 @@ $rolck_projects = array(
 			'highlights' => array( 'Spaced repetition in 15-day steps', 'Neural voice audio, cached after the first play', 'Import dozens of words at once', 'Progress for today, 7 and 30 days', 'Passcode-protected access (bcrypt + JWT)' ),
 			'content'    => array(
 				array( 'p', 'Galaxy Cards is a personal deck for memorizing English vocabulary. Each card has the word, its translation and an example sentence spoken by a native voice. Progress lives in a database, not in the browser.' ),
+				array( 'p', 'The live demo needs no passcode: it comes with sample words and keeps everything in your own browser.' ),
 				array( 'h2', 'How it works' ),
 				array( 'ul', array( 'Pick 10, 20, 30, 40, 50 or all cards, always shuffled', 'Each “easy” in a row pushes the card 15 more days away; on the fourth it becomes permanent', '“Hard” restarts the ladder and the card returns in the next deck', 'Every answer is saved instantly, and the timer is saved every 15 seconds', 'Progress tab with a daily chart for the last 30 days' ) ),
 			),
