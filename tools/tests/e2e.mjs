@@ -147,6 +147,10 @@ for ( const [ path, lang, other ] of [
 		)
 	);
 	check(
+		'home: título principal com o termo pesquisado',
+		/<h1[^>]*>[^<]*WordPress/.test( html )
+	);
+	check(
 		'home: sem script de emoji e sem gerador do WordPress',
 		! html.includes( 'wp-emoji' ) && ! html.includes( 'name="generator"' )
 	);

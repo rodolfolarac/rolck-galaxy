@@ -19,7 +19,7 @@ $t = 'rolck_theme_t';
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":1} -->
-<h1 class="wp-block-heading"><?php echo wp_kses_post( $t( 'Produtos digitais que <em>carregam rápido</em> e vendem mais', 'Digital products that <em>load fast</em> and sell more' ) ); ?></h1>
+<h1 class="wp-block-heading"><?php echo wp_kses_post( $t( 'Sites e produtos WordPress que <em>carregam rápido</em> e vendem mais', 'WordPress websites and products that <em>load fast</em> and sell more' ) ); ?></h1>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"className":"is-style-lead rolck-hero__lead"} -->

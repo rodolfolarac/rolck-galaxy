@@ -50,6 +50,13 @@ final class Updates {
 				self::fill_project_field( 'galaxy-cards', 'app_category', 'EducationalApplication' );
 				self::fill_project_field( 'galaxy-health', 'app_category', 'HealthApplication' );
 			},
+			// Título principal da home com o que as pessoas pesquisam (só se ainda for o original).
+			5 => static fn() => self::replace_in_pages(
+				array(
+					'Produtos digitais que <em>carregam rápido</em> e vendem mais' => 'Sites e produtos WordPress que <em>carregam rápido</em> e vendem mais',
+					'Digital products that <em>load fast</em> and sell more' => 'WordPress websites and products that <em>load fast</em> and sell more',
+				)
+			),
 		);
 	}
 
@@ -121,6 +128,30 @@ final class Updates {
 			}
 		}
 		update_option( Settings::OPTION, $saved );
+	}
+
+	/**
+	 * Troca trechos de texto no conteúdo das páginas onde eles ainda aparecem.
+	 *
+	 * @param array<string,string> $pairs Texto antigo => texto novo.
+	 */
+	private static function replace_in_pages( array $pairs ): void {
+		$ids = get_posts(
+			array(
+				'post_type'        => 'page',
+				'post_status'      => 'any',
+				'posts_per_page'   => -1,
+				'fields'           => 'ids',
+				'suppress_filters' => true,
+			)
+		);
+		foreach ( $ids as $id ) {
+			$content = (string) get_post_field( 'post_content', $id, 'raw' );
+			$updated = strtr( $content, $pairs );
+			if ( $updated !== $content ) {
+				wp_update_post( wp_slash( array( 'ID' => $id, 'post_content' => $updated ) ) );
+			}
+		}
 	}
 
 	/** @return int[] Posts do tipo com o slug, em todos os idiomas. */
