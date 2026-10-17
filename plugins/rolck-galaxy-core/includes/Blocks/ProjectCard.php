@@ -41,7 +41,6 @@ final class ProjectCard {
 						'large',
 						array(
 							'class'         => 'rolck-card__image',
-							'alt'           => '',
 							'sizes'         => '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 400px',
 							'loading'       => empty( $options['eager'] ) ? 'lazy' : 'eager',
 							'fetchpriority' => empty( $options['eager'] ) ? 'auto' : 'high',

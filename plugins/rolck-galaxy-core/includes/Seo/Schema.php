@@ -1,8 +1,8 @@
 <?php
 /**
  * Dados estruturados (JSON-LD) num único @graph: Organization, WebSite,
- * WebPage, BreadcrumbList, BlogPosting, SoftwareApplication (projetos) e
- * ItemList (vitrine).
+ * WebPage, BreadcrumbList, BlogPosting, SoftwareApplication (projetos),
+ * ItemList (vitrine) e FAQPage (perguntas do bloco Detalhes com o estilo FAQ).
  *
  * Para acrescentar um tipo, crie um método que devolva o nó e chame-o em graph().
  *
@@ -68,6 +68,9 @@ final class Schema {
 		if ( is_post_type_archive( Projects::POST_TYPE ) || is_tax( Projects::TYPE_TAX ) ) {
 			$nodes[] = self::project_list( $url );
 		}
+		if ( $post && is_singular() ) {
+			$nodes[] = self::faq( $url, $post );
+		}
 		return (array) apply_filters( 'rolck_schema_graph', $nodes );
 	}
 
@@ -87,6 +90,7 @@ final class Schema {
 				'email'        => $email,
 				'foundingDate' => (string) ( Settings::get( 'general.founded_year' ) ?: '' ),
 				'sameAs'       => $social,
+				'knowsAbout'   => self::expertise(),
 				'logo'         => $logo ? array(
 					'@type'  => 'ImageObject',
 					'@id'    => self::id( 'logo' ),
@@ -183,13 +187,88 @@ final class Schema {
 				'dateModified'     => get_the_modified_date( 'c', $post ),
 				'image'            => $image ? $image['url'] : null,
 				'wordCount'        => str_word_count( wp_strip_all_tags( $post->post_content ) ),
-				'author'           => array(
-					'@type' => 'Person',
-					'name'  => get_the_author_meta( 'display_name', (int) $post->post_author ),
-				),
+				'author'           => self::author( (int) $post->post_author ),
 				'publisher'        => array( '@id' => self::id( 'organization' ) ),
 			)
 		);
+	}
+
+	/**
+	 * Autor do post. Quando o nome público é o próprio login (padrão do
+	 * WordPress), o login não vai para o Google: o autor vira a empresa.
+	 */
+	private static function author( int $user_id ): array {
+		$name  = trim( (string) get_the_author_meta( 'display_name', $user_id ) );
+		$login = array( (string) get_the_author_meta( 'user_login', $user_id ), (string) get_the_author_meta( 'user_nicename', $user_id ) );
+		if ( '' === $name || in_array( strtolower( $name ), array_map( 'strtolower', $login ), true ) ) {
+			return array( '@id' => self::id( 'organization' ) );
+		}
+		return array(
+			'@type' => 'Person',
+			'name'  => $name,
+		);
+	}
+
+	/** @return string[]|null Tecnologias cadastradas nos projetos (o que a empresa domina). */
+	private static function expertise(): ?array {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => Projects::TECH_TAX,
+				'hide_empty' => true,
+				'fields'     => 'names',
+			)
+		);
+		return is_array( $terms ) && $terms ? array_values( $terms ) : null;
+	}
+
+	/**
+	 * Perguntas frequentes da página: cada bloco Detalhes com o estilo "FAQ"
+	 * vira uma pergunta (resumo) com a resposta (conteúdo).
+	 */
+	private static function faq( string $url, WP_Post $post ): ?array {
+		$items = array();
+		foreach ( self::details_blocks( parse_blocks( $post->post_content ) ) as $block ) {
+			$html = render_block( $block );
+			if ( ! preg_match( '#<summary[^>]*>(.*?)</summary>(.*)</details>#s', $html, $m ) ) {
+				continue;
+			}
+			$question = trim( wp_strip_all_tags( $m[1] ) );
+			$answer   = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $m[2] ) ) );
+			if ( '' !== $question && '' !== $answer ) {
+				$items[] = array(
+					'@type'          => 'Question',
+					'name'           => $question,
+					'acceptedAnswer' => array(
+						'@type' => 'Answer',
+						'text'  => $answer,
+					),
+				);
+			}
+		}
+		return $items ? array(
+			'@type'      => 'FAQPage',
+			'@id'        => $url . '#faq',
+			'isPartOf'   => array( '@id' => $url . '#webpage' ),
+			'inLanguage' => self::lang(),
+			'mainEntity' => $items,
+		) : null;
+	}
+
+	/**
+	 * @param array<int,array> $blocks Blocos (com os aninhados).
+	 * @return array<int,array> Blocos Detalhes com a classe is-style-faq.
+	 */
+	private static function details_blocks( array $blocks ): array {
+		$found = array();
+		foreach ( $blocks as $block ) {
+			if ( 'core/details' === $block['blockName'] && str_contains( (string) ( $block['attrs']['className'] ?? '' ), 'is-style-faq' ) ) {
+				$found[] = $block;
+			}
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$found = array_merge( $found, self::details_blocks( $block['innerBlocks'] ) );
+			}
+		}
+		return $found;
 	}
 
 	private static function project( string $url, WP_Post $post ): array {
@@ -221,7 +300,7 @@ final class Schema {
 				'url'                 => $url,
 				'image'               => $image ? $image['url'] : null,
 				'inLanguage'          => self::lang(),
-				'applicationCategory' => 'DeveloperApplication',
+				'applicationCategory' => isset( Projects::app_categories()[ $data['app_category'] ] ) ? $data['app_category'] : 'DeveloperApplication',
 				'applicationSubCategory' => is_array( $types ) && $types ? $types[0]->name : null,
 				'operatingSystem'     => $data['compat'] ?: 'Web',
 				'softwareVersion'     => $data['version'] ?: null,

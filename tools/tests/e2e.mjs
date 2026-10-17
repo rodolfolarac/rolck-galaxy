@@ -142,7 +142,9 @@ for ( const [ path, lang, other ] of [
 	const { html } = await get( '/' );
 	check(
 		'home: título da home vem do painel',
-		/<title>Rolck Galaxy — /.test( html )
+		/<title>Criação de sites WordPress, temas e plugins · Rolck Galaxy<\/title>/.test(
+			html
+		)
 	);
 	check(
 		'home: sem script de emoji e sem gerador do WordPress',
@@ -169,6 +171,79 @@ for ( const [ path, lang, other ] of [
 	);
 	const users = await get( '/wp-sitemap-users-1.xml' );
 	check( 'sitemap não expõe usuários', users.status === 404 );
+
+	const graph = ( page ) =>
+		( jsonLd( page )?.[ '@graph' ] || [] ).reduce(
+			( all, node ) => ( { ...all, [ node[ '@type' ] ]: node } ),
+			{}
+		);
+	const home = graph( html );
+	check(
+		'home: perguntas frequentes viram FAQPage com pergunta e resposta',
+		home.FAQPage?.mainEntity?.length >= 3 &&
+			home.FAQPage.mainEntity.every(
+				( q ) => q.name && q.acceptedAnswer?.text
+			),
+		JSON.stringify( home.FAQPage?.mainEntity?.[ 0 ] || {} )
+	);
+	check(
+		'home: empresa informa as tecnologias que domina (knowsAbout)',
+		home.Organization?.knowsAbout?.includes( 'WordPress' )
+	);
+
+	const services = await get( '/servicos/' );
+	check(
+		'serviços: título de SEO com o que as pessoas pesquisam',
+		services.html.includes(
+			'<title>Criação de sites WordPress e plugins sob medida · Rolck Galaxy</title>'
+		)
+	);
+	const cards = await get( '/en/projects/galaxy-cards/' );
+	check(
+		'Galaxy Cards: título de SEO em inglês e categoria Educação no schema',
+		cards.html.includes(
+			'<title>Galaxy Cards: English vocabulary flashcards · Rolck Galaxy</title>'
+		) &&
+			graph( cards.html ).SoftwareApplication?.applicationCategory ===
+				'EducationalApplication'
+	);
+	check(
+		'capas dos projetos com texto alternativo da biblioteca',
+		/<img [^>]*class="rolck-card__image[^"]*"[^>]*alt="[^"]+"/.test(
+			html
+		) || /<img [^>]*alt="[^"]+"[^>]*class="rolck-card__image/.test( html )
+	);
+
+	const post = await get( '/site-wordpress-sem-plugins/' );
+	const author = graph( post.html ).BlogPosting?.author || {};
+	check(
+		'post: o login do autor não aparece nos dados estruturados',
+		author[ '@id' ]?.endsWith( '#organization' ) ||
+			( author.name && author.name !== 'admin' ),
+		JSON.stringify( author )
+	);
+
+	const tech = await get( '/tech/react/' );
+	check(
+		'páginas de tecnologia: noindex e fora do sitemap',
+		/<meta name='robots' content='[^']*noindex/.test( tech.html ) &&
+			! ( await get( '/wp-sitemap.xml' ) ).html.includes(
+				'taxonomies-rolck_tech'
+			)
+	);
+	const extra = await get( '/wp-sitemap-rolck-archives-1.xml' );
+	const terms = await get( '/wp-sitemap-rolck-terms-1.xml' );
+	check(
+		'sitemap inclui a vitrine e as categorias em inglês',
+		extra.html.includes( `${ BASE }/projetos/</loc>` ) &&
+			extra.html.includes( `${ BASE }/en/projects/</loc>` ) &&
+			terms.html.includes( '/en/project-category/web-apps/' ),
+		extra.status + ' ' + terms.status
+	);
+	check(
+		'sem link para o feed de comentários (comentários fechados)',
+		! html.includes( 'comments/feed' )
+	);
 }
 
 // ── 3. Navegador ────────────────────────────────────────────────────────
@@ -239,7 +314,7 @@ check(
 check(
 	'título da vitrine em inglês na aba do navegador',
 	( await get( '/en/projects/' ) ).html.includes(
-		'<title>Projects · Rolck Galaxy</title>'
+		'<title>WordPress themes and web apps with live demos · Rolck Galaxy</title>'
 	)
 );
 

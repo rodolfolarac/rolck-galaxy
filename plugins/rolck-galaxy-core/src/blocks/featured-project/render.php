@@ -53,7 +53,6 @@ $rolck_style   = $rolck_data['accent'] ? '--rolck-accent:' . $rolck_data['accent
 				$rolck_post,
 				'large',
 				array(
-					'alt'           => '',
 					'sizes'         => '(max-width: 900px) 100vw, 640px',
 					'loading'       => empty( $attributes['eager'] ) ? 'lazy' : 'eager',
 					'fetchpriority' => empty( $attributes['eager'] ) ? 'auto' : 'high',

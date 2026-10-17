@@ -76,7 +76,7 @@ final class Meta {
 	}
 
 	/**
-	 * Título personalizado do campo SEO (ou o título da página inicial do painel).
+	 * Título personalizado do campo SEO (ou os títulos da home e da vitrine definidos no painel).
 	 *
 	 * @param string $title Título calculado até aqui.
 	 */
@@ -88,6 +88,9 @@ final class Meta {
 		}
 		if ( is_front_page() ) {
 			return rolck_l( Settings::get( 'seo.home_title' ) ) ?: $title;
+		}
+		if ( is_post_type_archive( Projects::POST_TYPE ) && ! is_paged() ) {
+			return rolck_l( Settings::get( 'seo.projects_title' ) ) ?: $title;
 		}
 		return $title;
 	}
@@ -116,6 +119,9 @@ final class Meta {
 
 		if ( '' === $text && is_front_page() ) {
 			$text = rolck_l( Settings::get( 'seo.home_description' ) );
+		}
+		if ( '' === $text && is_post_type_archive( Projects::POST_TYPE ) ) {
+			$text = rolck_l( Settings::get( 'seo.projects_description' ) );
 		}
 		if ( '' === $text && $post && ! is_home() ) {
 			$text = has_excerpt( $post ) ? $post->post_excerpt : (string) get_post_meta( $post->ID, 'rolck_tagline', true );
@@ -171,6 +177,7 @@ final class Meta {
 		$noindex = ( $post && get_post_meta( $post->ID, '_rolck_seo_noindex', true ) )
 			|| ( is_search() && Settings::get( 'seo.noindex_search', true ) )
 			|| ( is_paged() && Settings::get( 'seo.noindex_paged', false ) )
+			|| ( is_tax( Projects::TECH_TAX ) && Settings::get( 'seo.noindex_tech', true ) )
 			|| is_attachment();
 
 		if ( $noindex ) {

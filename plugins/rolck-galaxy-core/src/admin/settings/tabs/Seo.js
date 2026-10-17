@@ -28,6 +28,24 @@ export default function Seo() {
 			</Section>
 
 			<Section
+				title="Vitrine de projetos"
+				description="Título e descrição que o Google mostra para a página com todos os projetos."
+			>
+				<Pair
+					path="seo.projects_title"
+					label="Título da vitrine"
+					max={ 60 }
+				/>
+				<Pair
+					path="seo.projects_description"
+					label="Descrição da vitrine"
+					long
+					rows={ 3 }
+					max={ 160 }
+				/>
+			</Section>
+
+			<Section
 				title="Padrões"
 				description="Usados em todas as páginas que não têm valores próprios no painel SEO do editor."
 			>
@@ -71,6 +89,11 @@ export default function Seo() {
 					path="seo.noindex_paged"
 					label="Não indexar páginas 2, 3… das listagens"
 					help="Normalmente deixe desligado; o canonical já resolve."
+				/>
+				<Toggle
+					path="seo.noindex_tech"
+					label="Não indexar as páginas de tecnologia (/tech/…)"
+					help="Recomendado: são listagens curtas e parecidas entre si. Continuam no site, só saem do Google e do sitemap."
 				/>
 			</Section>
 

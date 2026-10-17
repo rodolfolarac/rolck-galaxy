@@ -53,6 +53,14 @@ final class EditorAssets {
 					'translatableTypes' => Translations::post_types(),
 					'projectType'       => Projects::POST_TYPE,
 					'projectStatuses'   => $statuses,
+					'appCategories'     => array_map(
+						static fn( string $value, string $label ): array => array(
+							'value' => $value,
+							'label' => $label,
+						),
+						array_keys( Projects::app_categories() ),
+						Projects::app_categories()
+					),
 					'siteName'          => (string) Settings::get( 'general.company_name' ),
 					'separator'         => (string) Settings::get( 'seo.separator', '·' ),
 					'homeUrl'           => home_url( '/' ),

@@ -5,6 +5,7 @@ export const config = window.rolckEditor || {
 	translatableTypes: [],
 	projectType: 'rolck_project',
 	projectStatuses: [],
+	appCategories: [],
 	siteName: '',
 	separator: '·',
 	homeUrl: '/',

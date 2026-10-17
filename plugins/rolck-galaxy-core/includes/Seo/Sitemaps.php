@@ -1,15 +1,18 @@
 <?php
 /**
  * Ajustes no sitemap nativo do WordPress (/wp-sitemap.xml):
- * sem a lista de usuários, sem conteúdos marcados como "não indexar" e sem
- * taxonomias internas.
+ * sem a lista de usuários, sem conteúdos marcados como "não indexar", sem
+ * taxonomias internas e com a vitrine e os termos de todos os idiomas
+ * (LanguageSitemap).
  *
  * @package RolckGalaxy
  */
 
 namespace RolckGalaxy\Core\Seo;
 
+use RolckGalaxy\Core\Content\Projects;
 use RolckGalaxy\Core\I18n\Translations;
+use RolckGalaxy\Core\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,6 +23,7 @@ final class Sitemaps {
 		add_filter( 'wp_sitemaps_posts_query_args', array( self::class, 'skip_noindex' ) );
 		add_filter( 'wp_sitemaps_taxonomies', array( self::class, 'taxonomies' ) );
 		add_filter( 'wp_sitemaps_post_types', array( self::class, 'post_types' ) );
+		add_action( 'wp_sitemaps_init', static fn() => wp_register_sitemap_provider( 'rolck', new LanguageSitemap() ) );
 	}
 
 	/**
@@ -57,6 +61,10 @@ final class Sitemaps {
 	 */
 	public static function taxonomies( array $taxonomies ): array {
 		unset( $taxonomies[ Translations::TAXONOMY ], $taxonomies['post_format'] );
+		// Páginas de tecnologia marcadas como "não indexar" não entram no sitemap.
+		if ( Settings::get( 'seo.noindex_tech', true ) ) {
+			unset( $taxonomies[ Projects::TECH_TAX ] );
+		}
 		return $taxonomies;
 	}
 

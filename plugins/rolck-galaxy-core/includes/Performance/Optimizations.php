@@ -76,6 +76,8 @@ final class Optimizations {
 		remove_action( 'wp_head', 'wp_shortlink_wp_head' );
 		remove_action( 'wp_head', 'rest_output_link_wp_head' );
 		remove_action( 'wp_head', 'feed_links_extra', 3 );
+		// Com os comentários fechados, o feed de comentários é uma página vazia para o Google.
+		add_filter( 'feed_links_show_comments_feed', static fn(): bool => 'open' === get_option( 'default_comment_status' ) );
 		remove_action( 'template_redirect', 'wp_shortlink_header', 11 );
 		remove_action( 'template_redirect', 'rest_output_link_header', 11 );
 	}

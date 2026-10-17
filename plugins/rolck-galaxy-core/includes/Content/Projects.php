@@ -45,6 +45,7 @@ final class Projects {
 			'version'   => array( 'string', '' ),
 			'released'  => array( 'string', '' ),
 			'compat'    => array( 'string', '' ),
+			'app_category' => array( 'string', '' ),
 			'featured'  => array( 'boolean', false ),
 			'accent'    => array( 'string', '' ),
 			'highlights' => array( 'array', array() ),
@@ -54,6 +55,27 @@ final class Projects {
 	/** @return string[] Situações possíveis (a chave do texto é status_<valor>). */
 	public static function statuses(): array {
 		return array( 'available', 'soon', 'development' );
+	}
+
+	/**
+	 * Categorias de aplicativo aceitas pelo Google (schema.org applicationCategory).
+	 *
+	 * @return array<string,string> Valor → rótulo no painel.
+	 */
+	public static function app_categories(): array {
+		return array(
+			'DeveloperApplication'     => 'Desenvolvimento (temas, plugins, ferramentas)',
+			'BusinessApplication'      => 'Negócios',
+			'EducationalApplication'   => 'Educação',
+			'HealthApplication'        => 'Saúde e fitness',
+			'LifestyleApplication'     => 'Estilo de vida',
+			'FinanceApplication'       => 'Finanças',
+			'ShoppingApplication'      => 'Compras',
+			'DesignApplication'        => 'Design',
+			'SecurityApplication'      => 'Segurança',
+			'UtilitiesApplication'     => 'Utilitários',
+			'EntertainmentApplication' => 'Entretenimento',
+		);
 	}
 
 	public static function register_types(): void {

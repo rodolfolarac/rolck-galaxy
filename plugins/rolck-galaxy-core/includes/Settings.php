@@ -61,8 +61,10 @@ final class Settings {
 			),
 			'seo'          => array(
 				'separator'           => '·',
-				'home_title'          => $pair( 'Rolck Galaxy — Temas WordPress e produtos digitais de alta performance', 'Rolck Galaxy — High-performance WordPress themes and digital products' ),
-				'home_description'    => $pair( 'A Rolck Galaxy cria temas WordPress, plugins e templates rápidos, acessíveis e prontos para ranquear. Veja as demos ao vivo de todos os projetos.', 'Rolck Galaxy builds fast, accessible, SEO-ready WordPress themes, plugins and templates. Explore the live demo of every project.' ),
+				'home_title'          => $pair( 'Criação de sites WordPress, temas e plugins · Rolck Galaxy', 'WordPress websites, themes and plugins · Rolck Galaxy' ),
+				'home_description'    => $pair( 'Sites WordPress rápidos, temas e plugins sob medida, com SEO técnico e performance medida no PageSpeed. Veja as demos ao vivo e peça um orçamento.', 'Fast WordPress websites, themes and custom plugins with technical SEO and PageSpeed-tested performance. Explore the live demos and get a quote.' ),
+				'projects_title'       => $pair( 'Temas WordPress e aplicativos web com demo ao vivo · Rolck Galaxy', 'WordPress themes and web apps with live demos · Rolck Galaxy' ),
+				'projects_description' => $pair( 'Temas WordPress e aplicativos web da Rolck Galaxy, com ficha técnica e demo ao vivo de cada projeto.', 'WordPress themes and web apps by Rolck Galaxy, each with a spec sheet and a live demo.' ),
 				'default_image_id'    => 0,
 				'organization_type'   => 'Organization',
 				'twitter_handle'      => '',
@@ -70,6 +72,7 @@ final class Settings {
 				'bing_verification'   => '',
 				'noindex_search'      => true,
 				'noindex_paged'       => false,
+				'noindex_tech'        => true,
 			),
 			'projects'     => array(
 				'slug'        => $pair( 'projetos', 'projects' ),

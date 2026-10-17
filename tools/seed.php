@@ -572,4 +572,9 @@ RolckGalaxy\Core\Content\ProjectRewrites::add_rules();
 flush_rewrite_rules( false );
 rolck_seed_log( 'Página inicial, blog, limpeza do conteúdo padrão e URLs' );
 
+// Atualizações de conteúdo (títulos de SEO, links…) também valem para o site novo.
+delete_option( 'rolck_content_updates' );
+RolckGalaxy\Core\Content\Updates::run();
+rolck_seed_log( 'Títulos e descrições de SEO' );
+
 echo "Pronto.\n";

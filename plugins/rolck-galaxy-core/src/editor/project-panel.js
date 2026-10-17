@@ -105,6 +105,18 @@ export default function ProjectPanel() {
 			{ field( 'rolck_compat', 'Compatibilidade', {
 				placeholder: 'WordPress 6.6+, PHP 8.1+',
 			} ) }
+			<SelectControl
+				__next40pxDefaultSize
+				__nextHasNoMarginBottom
+				label="Categoria do aplicativo (Google)"
+				help="Como o Google classifica o projeto nos dados estruturados."
+				value={ m.rolck_app_category || '' }
+				options={ [
+					{ label: 'Automática (Desenvolvimento)', value: '' },
+					...config.appCategories,
+				] }
+				onChange={ ( v ) => setMeta( { rolck_app_category: v } ) }
+			/>
 
 			<div className="rolck-panel__field">
 				<span className="rolck-panel__label">Cor de destaque</span>
