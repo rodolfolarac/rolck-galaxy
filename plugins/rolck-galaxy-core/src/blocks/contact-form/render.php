@@ -15,7 +15,7 @@ use RolckGalaxy\Core\I18n\Strings;
 
 defined( 'ABSPATH' ) || exit;
 
-$rolck_t = Strings::many( array( 'contact_name', 'contact_email', 'contact_subject', 'contact_message', 'contact_send', 'contact_sending', 'contact_invalid', 'contact_error' ) );
+$rolck_t = Strings::many( array( 'contact_name', 'contact_email', 'contact_phone', 'contact_subject', 'contact_message', 'contact_send', 'contact_sending', 'contact_invalid', 'contact_error' ) );
 
 wp_interactivity_state(
 	'rolck/contact-form',
@@ -50,12 +50,18 @@ $rolck_uid = wp_unique_id( 'rolck-contact-' );
 			<input id="<?php echo esc_attr( $rolck_uid ); ?>-email" name="email" type="email" autocomplete="email" required maxlength="160">
 		</p>
 	</div>
-	<?php if ( ! empty( $attributes['showSubject'] ) ) : ?>
+	<div class="rolck-contact__row">
 		<p class="rolck-contact__field">
-			<label for="<?php echo esc_attr( $rolck_uid ); ?>-subject"><?php echo esc_html( $rolck_t['contact_subject'] ); ?></label>
-			<input id="<?php echo esc_attr( $rolck_uid ); ?>-subject" name="subject" type="text" maxlength="160">
+			<label for="<?php echo esc_attr( $rolck_uid ); ?>-phone"><?php echo esc_html( $rolck_t['contact_phone'] ); ?></label>
+			<input id="<?php echo esc_attr( $rolck_uid ); ?>-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30">
 		</p>
-	<?php endif; ?>
+		<?php if ( ! empty( $attributes['showSubject'] ) ) : ?>
+			<p class="rolck-contact__field">
+				<label for="<?php echo esc_attr( $rolck_uid ); ?>-subject"><?php echo esc_html( $rolck_t['contact_subject'] ); ?></label>
+				<input id="<?php echo esc_attr( $rolck_uid ); ?>-subject" name="subject" type="text" maxlength="160">
+			</p>
+		<?php endif; ?>
+	</div>
 	<p class="rolck-contact__field">
 		<label for="<?php echo esc_attr( $rolck_uid ); ?>-message"><?php echo esc_html( $rolck_t['contact_message'] ); ?></label>
 		<textarea id="<?php echo esc_attr( $rolck_uid ); ?>-message" name="message" rows="6" required maxlength="5000"></textarea>

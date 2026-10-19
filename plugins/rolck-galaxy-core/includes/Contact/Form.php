@@ -80,6 +80,10 @@ final class Form {
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_email',
 					),
+					'phone'   => array(
+						'type'              => 'string',
+						'sanitize_callback' => array( self::class, 'clean_phone' ),
+					),
 					'subject' => array(
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
@@ -113,6 +117,7 @@ final class Form {
 
 		$name    = trim( (string) $request['name'] );
 		$email   = (string) $request['email'];
+		$phone   = (string) $request['phone'];
 		$message = trim( (string) $request['message'] );
 		if ( '' === $name || ! is_email( $email ) || mb_strlen( $message ) < 5 ) {
 			return $fail( 'contact_invalid', 400 );
@@ -139,13 +144,14 @@ final class Form {
 			);
 			if ( $id && ! is_wp_error( $id ) ) {
 				update_post_meta( $id, 'rolck_email', $email );
+				update_post_meta( $id, 'rolck_phone', $phone );
 				update_post_meta( $id, 'rolck_lang', $lang );
 				update_post_meta( $id, 'rolck_page', (string) $request['page'] );
 			}
 		}
 
 		$to   = Mailer::recipient();
-		$body = sprintf( "Nome: %s\nE-mail: %s\nIdioma: %s\nPágina: %s\n\n%s", $name, $email, strtoupper( $lang ), (string) $request['page'], $message );
+		$body = sprintf( "Nome: %s\nE-mail: %s\nTelefone: %s\nIdioma: %s\nPágina: %s\n\n%s", $name, $email, '' === $phone ? '—' : $phone, strtoupper( $lang ), (string) $request['page'], $message );
 		$sent = wp_mail(
 			(string) $to,
 			trim( Settings::get( 'contact.subject_prefix', '' ) . ' ' . $subject ),
@@ -162,6 +168,11 @@ final class Form {
 		return array( 'message' => Languages::pick( Settings::get( 'contact.success' ), $lang ) );
 	}
 
+	/** Telefone opcional: só dígitos, espaços, +, -, ( e ), até 30 caracteres. */
+	public static function clean_phone( mixed $value ): string {
+		return mb_substr( trim( preg_replace( '/[^0-9+()\-\s]/', '', (string) $value ) ), 0, 30 );
+	}
+
 	private static function ip(): string {
 		return isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '0.0.0.0';
 	}
@@ -174,6 +185,7 @@ final class Form {
 			'cb'          => $columns['cb'] ?? '',
 			'title'       => 'Contato',
 			'rolck_email' => 'E-mail',
+			'rolck_phone' => 'Telefone',
 			'rolck_lang'  => 'Idioma',
 			'rolck_mail'  => 'Aviso por e-mail',
 			'date'        => 'Recebida em',
@@ -188,6 +200,8 @@ final class Form {
 		$value = (string) get_post_meta( $post_id, $column, true );
 		if ( 'rolck_email' === $column ) {
 			printf( '<a href="mailto:%1$s">%1$s</a>', esc_attr( $value ) );
+		} elseif ( 'rolck_phone' === $column ) {
+			echo '' === $value ? '—' : sprintf( '<a href="tel:%s">%s</a>', esc_attr( preg_replace( '/[^0-9+]/', '', $value ) ), esc_html( $value ) );
 		} elseif ( 'rolck_lang' === $column ) {
 			echo esc_html( strtoupper( $value ) );
 		} elseif ( 'rolck_mail' === $column ) {
@@ -203,11 +217,13 @@ final class Form {
 			'Mensagem',
 			static function ( \WP_Post $post ): void {
 				$email = (string) get_post_meta( $post->ID, 'rolck_email', true );
+				$phone = (string) get_post_meta( $post->ID, 'rolck_phone', true );
 				printf(
-					'<p><strong>E-mail:</strong> <a href="mailto:%1$s">%1$s</a></p><p><strong>Página:</strong> %2$s</p><div style="white-space:pre-wrap;font-size:14px;line-height:1.6;background:#f6f7f7;padding:16px;border-radius:6px">%3$s</div><p><a class="button button-primary" href="mailto:%1$s">Responder por e-mail</a></p>',
+					'<p><strong>E-mail:</strong> <a href="mailto:%1$s">%1$s</a></p><p><strong>Telefone:</strong> %4$s</p><p><strong>Página:</strong> %2$s</p><div style="white-space:pre-wrap;font-size:14px;line-height:1.6;background:#f6f7f7;padding:16px;border-radius:6px">%3$s</div><p><a class="button button-primary" href="mailto:%1$s">Responder por e-mail</a></p>',
 					esc_attr( $email ),
 					esc_html( (string) get_post_meta( $post->ID, 'rolck_page', true ) ),
-					esc_html( $post->post_content )
+					esc_html( $post->post_content ),
+					'' === $phone ? '—' : sprintf( '<a href="tel:%s">%s</a>', esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ), esc_html( $phone ) )
 				);
 			},
 			self::POST_TYPE,

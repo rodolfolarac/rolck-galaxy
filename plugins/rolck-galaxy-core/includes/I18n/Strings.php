@@ -64,6 +64,7 @@ final class Strings {
 		'Contato'   => array(
 			'contact_name'     => array( 'Nome', 'Name' ),
 			'contact_email'    => array( 'E-mail', 'Email' ),
+			'contact_phone'    => array( 'Telefone (opcional)', 'Phone (optional)' ),
 			'contact_subject'  => array( 'Assunto', 'Subject' ),
 			'contact_message'  => array( 'Mensagem', 'Message' ),
 			'contact_send'     => array( 'Enviar mensagem', 'Send message' ),

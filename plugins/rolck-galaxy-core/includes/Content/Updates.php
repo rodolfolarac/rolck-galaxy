@@ -59,6 +59,13 @@ final class Updates {
 			),
 			// Mensagens do formulário de contato vão para o e-mail pessoal (pedido do dono do site).
 			6 => static fn() => self::set_setting( 'contact', 'recipient', 'rodolfolaracassaro@gmail.com' ),
+			// Política de privacidade cita o telefone, novo campo opcional do formulário.
+			7 => static fn() => self::replace_in_pages(
+				array(
+					'nome, e-mail, assunto e mensagem' => 'nome, e-mail, telefone (se informado), assunto e mensagem',
+					'name, email, subject and message' => 'name, email, phone (if provided), subject and message',
+				)
+			),
 		);
 	}
 

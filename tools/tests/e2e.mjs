@@ -408,6 +408,16 @@ check(
 await page.waitForTimeout( 3200 );
 await page.fill( '.rolck-contact input[name="name"]', 'Teste Automatizado' );
 await page.fill( '.rolck-contact input[name="email"]', 'teste@example.com' );
+check(
+	'campo de telefone presente e opcional',
+	( await page
+		.locator( '.rolck-contact input[name="phone"][type="tel"]' )
+		.count() ) === 1 &&
+		! ( await page
+			.locator( '.rolck-contact input[name="phone"]' )
+			.evaluate( ( el ) => el.required ) )
+);
+await page.fill( '.rolck-contact input[name="phone"]', '+55 (11) 98765-4321' );
 await page.fill(
 	'.rolck-contact textarea[name="message"]',
 	'Mensagem enviada pelo teste automatizado.'
@@ -440,6 +450,12 @@ check(
 	'mensagem do formulário guardada em Rolck Galaxy → Mensagens',
 	( await admin.locator( '#the-list' ).innerText() ).includes(
 		'Teste Automatizado'
+	)
+);
+check(
+	'telefone guardado com a mensagem',
+	( await admin.locator( '#the-list tr' ).first().innerText() ).includes(
+		'+55 (11) 98765-4321'
 	)
 );
 check(

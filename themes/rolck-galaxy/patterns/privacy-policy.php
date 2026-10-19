@@ -64,7 +64,7 @@ echo $h2( $t( '2. Quais dados tratamos e por quê', '2. What data we process and
 echo $h3( $t( 'Formulário de contato', 'Contact form' ) );
 echo $ul(
 	array(
-		esc_html( $t( 'Dados: nome, e-mail, assunto e mensagem que você escreve, além do idioma e da página de onde a mensagem foi enviada.', 'Data: the name, email, subject and message you write, plus the language and the page the message was sent from.' ) ),
+		esc_html( $t( 'Dados: nome, e-mail, telefone (se informado), assunto e mensagem que você escreve, além do idioma e da página de onde a mensagem foi enviada.', 'Data: the name, email, phone (if provided), subject and message you write, plus the language and the page the message was sent from.' ) ),
 		esc_html( $t( 'Finalidade: responder ao seu contato e, se for o caso, preparar uma proposta.', 'Purpose: to reply to you and, where applicable, prepare a proposal.' ) ),
 		esc_html( $t( 'Base legal: procedimentos preliminares a um contrato, a seu pedido (LGPD, art. 7º, V), e o nosso legítimo interesse em responder a quem nos procura (art. 7º, IX).', 'Legal basis: steps taken at your request before entering into a contract (LGPD, art. 7, V) and our legitimate interest in replying to people who contact us (art. 7, IX).' ) ),
 		esc_html( $t( 'Prazo: pelo tempo necessário para atender ao contato e à relação comercial que dele resultar. Você pode pedir a exclusão a qualquer momento.', 'Retention: for as long as needed to handle your message and any business relationship that follows. You can ask for deletion at any time.' ) ),
