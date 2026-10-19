@@ -32,6 +32,7 @@ final class Plugin {
 		Seo\Schema::class,
 		Seo\Sitemaps::class,
 		Contact\Form::class,
+		Contact\Mailer::class,
 		Performance\Optimizations::class,
 		Performance\BrowserCache::class,
 		Integrations\Analytics::class,

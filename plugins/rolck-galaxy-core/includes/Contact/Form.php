@@ -126,6 +126,7 @@ final class Form {
 		set_transient( $key, $count + 1, 10 * MINUTE_IN_SECONDS );
 
 		$subject = trim( (string) $request['subject'] ) ?: mb_substr( $message, 0, 60 );
+		$id      = 0;
 
 		if ( Settings::get( 'contact.store_messages', true ) ) {
 			$id = wp_insert_post(
@@ -143,7 +144,7 @@ final class Form {
 			}
 		}
 
-		$to   = Settings::get( 'contact.recipient' ) ?: Settings::get( 'general.email' ) ?: get_option( 'admin_email' );
+		$to   = Mailer::recipient();
 		$body = sprintf( "Nome: %s\nE-mail: %s\nIdioma: %s\nPágina: %s\n\n%s", $name, $email, strtoupper( $lang ), (string) $request['page'], $message );
 		$sent = wp_mail(
 			(string) $to,
@@ -151,6 +152,9 @@ final class Form {
 			$body,
 			array( 'Reply-To: ' . $name . ' <' . $email . '>' )
 		);
+		if ( ! empty( $id ) && ! is_wp_error( $id ) ) {
+			update_post_meta( $id, 'rolck_mail', $sent ? 'ok' : Mailer::last_error() );
+		}
 
 		if ( ! $sent && ! Settings::get( 'contact.store_messages', true ) ) {
 			return $fail( 'contact_error', 500 );
@@ -171,6 +175,7 @@ final class Form {
 			'title'       => 'Contato',
 			'rolck_email' => 'E-mail',
 			'rolck_lang'  => 'Idioma',
+			'rolck_mail'  => 'Aviso por e-mail',
 			'date'        => 'Recebida em',
 		);
 	}
@@ -185,6 +190,9 @@ final class Form {
 			printf( '<a href="mailto:%1$s">%1$s</a>', esc_attr( $value ) );
 		} elseif ( 'rolck_lang' === $column ) {
 			echo esc_html( strtoupper( $value ) );
+		} elseif ( 'rolck_mail' === $column ) {
+			// Mensagens antigas não têm o registro.
+			echo esc_html( '' === $value ? '—' : ( 'ok' === $value ? 'Enviado' : 'Falhou: ' . $value ) );
 		}
 	}
 

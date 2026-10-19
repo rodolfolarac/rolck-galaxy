@@ -442,6 +442,26 @@ check(
 		'Teste Automatizado'
 	)
 );
+check(
+	'mensagem mostra se o aviso por e-mail saiu',
+	/Enviado|Falhou/.test(
+		await admin.locator( '#the-list tr' ).first().innerText()
+	)
+);
+{
+	const anon = await fetch( BASE + '/wp-json/rolck/v1/mail/status' );
+	check( 'status do e-mail fechado para visitantes', anon.status === 401 );
+}
+await admin.goto( BASE + '/wp-admin/admin.php?page=rolck-galaxy#contact' );
+await admin.waitForSelector( 'text=Envio de e-mail (SMTP)' );
+check(
+	'aba Contato com SMTP e e-mail de teste',
+	( await admin
+		.locator( 'button', { hasText: 'Enviar e-mail de teste' } )
+		.count() ) === 1
+);
+// Só a âncora muda daqui em diante: sai da página para o painel recarregar.
+await admin.goto( 'about:blank' );
 
 await admin.goto( BASE + '/wp-admin/admin.php?page=rolck-galaxy#texts' );
 await admin.waitForSelector( '.rolck-admin__string' );
