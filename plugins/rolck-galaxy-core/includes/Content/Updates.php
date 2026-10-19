@@ -57,6 +57,8 @@ final class Updates {
 					'Digital products that <em>load fast</em> and sell more' => 'WordPress websites and products that <em>load fast</em> and sell more',
 				)
 			),
+			// Mensagens do formulário de contato vão para o e-mail pessoal (pedido do dono do site).
+			6 => static fn() => self::set_setting( 'contact', 'recipient', 'rodolfolaracassaro@gmail.com' ),
 		);
 	}
 
@@ -127,6 +129,14 @@ final class Updates {
 				}
 			}
 		}
+		update_option( Settings::OPTION, $saved );
+	}
+
+	/** Grava uma configuração do painel (Rolck Galaxy → …), mantendo as demais. */
+	private static function set_setting( string $group, string $key, string $value ): void {
+		$saved = get_option( Settings::OPTION );
+		$saved = is_array( $saved ) ? $saved : array();
+		$saved[ $group ][ $key ] = $value;
 		update_option( Settings::OPTION, $saved );
 	}
 
